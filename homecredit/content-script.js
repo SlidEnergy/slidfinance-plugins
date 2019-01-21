@@ -30,17 +30,17 @@ function exportTransactionsCommandHandler() {
         throw Error("Error: Token is " + token);
     }
 
-    let accountId = getAccountId();
-    if (!accountId) {
-        alert("Error: AccountId is " + accountId);
-        throw Error("Error: AccountId is " + accountId);
+    let accountCode = getAccountCode();
+    if (!accountCode) {
+        alert("Error: accountCode is " + accountCode);
+        throw Error("Error: accountCode is " + accountCode);
     }
 
     let transactions = parseTransactions();
     let balance = parseBalance();
 
     if (token && transactions && transactions.length)
-        sendTransactions(token, accountId, { balance, transactions });
+        sendTransactions(token, accountCode, { balance, transactions });
 }
 
 function getToken() {
@@ -54,15 +54,8 @@ function getToken() {
     return jsonAuth && jsonAuth.token;
 }
 
-function getAccountId() {
-    var accountId = localStorage.getItem("accountId");
-
-    try {
-        return parseInt(accountId);
-    }
-    catch{ }
-
-    return null;
+function getAccountCode() {
+    return localStorage.getItem("accountCode");
 }
 
 let months = { "Января": 0, "Февраля": 1, "Марта": 2, "Апреля": 3, "Мая": 4, "Июня": 5, "Июля": 6, "Августа": 7, "Сентября": 8, "Октября": 9, "Ноября": 10, "Декабря": 11 };
@@ -83,7 +76,7 @@ function parseBalance() {
 }
 
 function parseAmount(text) {
-    return parseFloat(text.replace(/[+\sр]/g, "").replace(/,/g,"."));
+    return parseFloat(text.replace(/[+\sр]/g, "").replace(/,/g, "."));
 }
 
 function parseTransactions() {
@@ -132,9 +125,9 @@ function parseTransactions() {
     return transactions;
 }
 
-function sendTransactions(token, accountId, data) {
+function sendTransactions(token, accountCode, data) {
     var req = new XMLHttpRequest();
-    req.open('PATCH', 'https://myfinance-server.herokuapp.com/api/v1/accounts/' + accountId, true);
+    req.open('PATCH', 'https://myfinance-server.herokuapp.com/api/v1/accounts/' + accountCode, true);
     req.setRequestHeader("Content-Type", "application/json");
     req.setRequestHeader("Authorization", "Bearer " + token);
     req.onreadystatechange = function () {

@@ -30,10 +30,10 @@ function exportTransactionsCommandHandler() {
         throw Error("Error: Token is " + token);
     }
 
-    let accountId = getAccountId();
-    if (!accountId) {
-        alert("Error: AccountId is " + accountId);
-        throw Error("Error: AccountId is " + accountId);
+    let accountCode = getAccountCode();
+    if (!accountCode) {
+        alert("Error: accountCode is " + accountCode);
+        throw Error("Error: accountCode is " + accountCode);
     }
 
     prepareToParse();
@@ -41,7 +41,7 @@ function exportTransactionsCommandHandler() {
     let balance = parseBalance();
 
     if (token && transactions && transactions.length)
-        sendTransactions(token, accountId, { balance, transactions });
+        sendTransactions(token, accountCode, { balance, transactions });
 }
 
 function getToken() {
@@ -55,15 +55,8 @@ function getToken() {
     return jsonAuth && jsonAuth.token;
 }
 
-function getAccountId() {
-    var accountId = localStorage.getItem("accountId");
-
-    try {
-        return parseInt(accountId);
-    }
-    catch{ }
-
-    return null;
+function getAccountCode() {
+    return localStorage.getItem("accountCode");
 }
 
 function parseDate(text) {
@@ -71,7 +64,7 @@ function parseDate(text) {
 
     let matches = text.match(/(\d{1,2}) (января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)[ ]{0,1}(\d{0,4})/);
     let year = new Date().getFullYear();
-    if(matches[3])
+    if (matches[3])
         year = +matches[3];
     date = new Date(year, months[matches[2]], +matches[1], 0, 0, 0);
     date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
@@ -153,9 +146,9 @@ function parseTransactions() {
     return transactions;
 }
 
-function sendTransactions(token, accountId, data) {
+function sendTransactions(token, accountCode, data) {
     var req = new XMLHttpRequest();
-    req.open('PATCH', 'https://myfinance-server.herokuapp.com/api/v1/accounts/' + accountId, true);
+    req.open('PATCH', 'https://myfinance-server.herokuapp.com/api/v1/accounts/' + accountCode, true);
     req.setRequestHeader("Content-Type", "application/json");
     req.setRequestHeader("Authorization", "Bearer " + token);
     req.onreadystatechange = function () {

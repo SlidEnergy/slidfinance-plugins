@@ -30,10 +30,10 @@ function exportTransactionsCommandHandler() {
         throw Error("Error: Token is " + token);
     }
 
-    let accountId = getAccountId();
-    if (!accountId) {
-        alert("Error: AccountId is " + accountId);
-        throw Error("Error: AccountId is " + accountId);
+    let accountCode = getAccountCode();
+    if (!accountCode) {
+        alert("Error: accountCode is " + accountCode);
+        throw Error("Error: accountCode is " + accountCode);
     }
 
     prepareToParse();
@@ -41,7 +41,7 @@ function exportTransactionsCommandHandler() {
     let balance = parseBalance();
 
     if (token && transactions && transactions.length)
-        sendTransactions(token, accountId, { balance, transactions });
+        sendTransactions(token, accountCode, { balance, transactions });
 }
 
 function getToken() {
@@ -55,15 +55,8 @@ function getToken() {
     return jsonAuth && jsonAuth.token;
 }
 
-function getAccountId() {
-    var accountId = localStorage.getItem("accountId");
-
-    try {
-        return parseInt(accountId);
-    }
-    catch{ }
-
-    return null;
+function getAccountCode() {
+    return localStorage.getItem("accountCode");
 }
 
 function parseDate(text) {
@@ -119,19 +112,24 @@ function parseTransactions() {
         let description = record.querySelector(".name").pipe(setBorder, firstChildText);
         let dateTime = record.querySelector(".name .info span:first-child").pipe(setBorder, lastChildText, parseDate);
 
-        let categoryElement1 = record.querySelector(".name .info span:nth-child(2)");
-        let categoryElement2 = record.querySelector(".name .info span:nth-child(3)");
+        let mccElement = record.querySelector(".name .info span:nth-child(2)");
+        let mcc = null;
+        if (mccElement) {
+            let mccText = mccElement.pipe(setBorder, firstChildText);
+            if (mccText) {
+                mcc = parseInt(mccText.match(/MCC: (\d{4})/)[1]);
+            }
+        }
+
+        let categoryElement = record.querySelector(".name .info span:nth-child(3)");
 
         let category = "";
-        if (categoryElement1)
-            category = "" + categoryElement1.pipe(setBorder, firstChildText);
-
-        if (categoryElement2)
-            category = (category ? category + " " : "") + categoryElement2.pipe(setBorder, firstChildText);
+        if (categoryElement)
+            category = categoryElement.pipe(setBorder, firstChildText);
 
         let amount = record.querySelector(".val > div").pipe(setBorder, firstChildText, parseAmount);
 
-        let transaction = { description, category, dateTime, amount };
+        let transaction = { description, category, dateTime, amount, mcc };
 
         console.log(JSON.stringify(transaction));
         transactions.push(transaction);
@@ -140,9 +138,9 @@ function parseTransactions() {
     return transactions;
 }
 
-function sendTransactions(token, accountId, data) {
+function sendTransactions(token, accountCode, data) {
     var req = new XMLHttpRequest();
-    req.open('PATCH', 'https://myfinance-server.herokuapp.com/api/v1/accounts/' + accountId, true);
+    req.open('PATCH', 'https://myfinance-server.herokuapp.com/api/v1/accounts/' + accountCode, true);
     req.setRequestHeader("Content-Type", "application/json");
     req.setRequestHeader("Authorization", "Bearer " + token);
     req.onreadystatechange = function () {
