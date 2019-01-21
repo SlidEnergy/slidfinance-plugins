@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "Myfinance.HomecreditBank",
+  "version": "0.1",
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": false
+  },
+  "permissions": [
+    "cookies",
+    "*://*.homecredit.ru/*",
+    "downloads",
+    "activeTab"
+  ],
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_title": "Home credit bank\n\nЭкспорт баланса и транзакций в систему myfinance."
+  }
+}
