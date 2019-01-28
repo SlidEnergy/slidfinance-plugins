@@ -63,12 +63,28 @@ function parseDate(text) {
     const months = { "января": 0, "февраля": 1, "марта": 2, "апреля": 3, "мая": 4, "июня": 5, "июля": 6, "августа": 7, "сентября": 8, "октября": 9, "ноября": 10, "декабря": 11 };
 
     let matches = text.match(/(\d{1,2}) (января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)[ ]{0,1}(\d{0,4})/);
-    let year = new Date().getFullYear();
-    if (matches[3])
-        year = +matches[3];
-    date = new Date(year, months[matches[2]], +matches[1], 0, 0, 0);
-    date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
-    return date;
+    if(matches) {
+        let year = new Date().getFullYear();
+        if (matches[3])
+            year = +matches[3];
+        let date = new Date(Date.UTC(year, months[matches[2]], +matches[1]));
+        return date;
+    }
+
+    matches = text.match(/(Сегодня|Вчера)/);
+    if(matches) {
+        if(matches[1] === 'Сегодня') {
+            let nowDate = new Date();
+            let date = new Date(Date.UTC(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate()));
+            return date;
+        }
+        if(matches[1] === 'Вчера') {
+            let nowDate = new Date();
+            let date = new Date(Date.UTC(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate()));
+            date.setDate(date.getDate() - 1);
+            return date;
+        }
+    }
 }
 
 function parseBalance() {
