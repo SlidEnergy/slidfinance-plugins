@@ -9,9 +9,7 @@
     "persistent": false
   },
   "permissions": [
-    "cookies",
     "*://*.homecredit.ru/*",
-    "downloads",
     "activeTab"
   ],
   "browser_action": {

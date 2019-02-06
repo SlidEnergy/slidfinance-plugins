@@ -1,5 +1,3 @@
-console.log("content-script loaded")
-
 // Listen for messages from browser-action or background script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     var response;
@@ -60,18 +58,41 @@ function getAccountCode() {
 }
 
 function parseDate(text) {
-    let matches = text.match(/(\d{2})[\/.](\d{2})[\/.](\d{4})/);
-    let date = new Date(+matches[3], +matches[2] - 1, +matches[1]);
-    date.setHours(date.getHours() - date.getTimezoneOffset() / 60);
-    return date;
+    const months = { "января": 0, "февраля": 1, "марта": 2, "апреля": 3, "мая": 4, "июня": 5, "июля": 6, "августа": 7, "сентября": 8, "октября": 9, "ноября": 10, "декабря": 11 };
+
+    let matches = text.match(/(\d{1,2}) (января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)[ ]{0,1}(\d{0,4})/);
+    if (matches) {
+        let year = new Date().getFullYear();
+        if (matches[3])
+            year = +matches[3];
+        let date = new Date(Date.UTC(year, months[matches[2]], +matches[1]));
+        return date;
+    }
+
+    matches = text.match(/(сегодня|вчера)/);
+    if (matches) {
+        if (matches[1] === 'сегодня') {
+            let nowDate = new Date();
+            let date = new Date(Date.UTC(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate()));
+            return date;
+        }
+        if (matches[1] === 'вчера') {
+            let nowDate = new Date();
+            let date = new Date(Date.UTC(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate()));
+            date.setDate(date.getDate() - 1);
+            return date;
+        }
+    }
 }
 
 function parseBalance() {
-    return document.querySelector("div.new-info-list__balance").pipe(setBorder, firstChildText, parseAmount);
+    let amount = document.querySelector("div[data-key='5003116562'].board__QbjcC .board__2Vhh9").pipe(setBorder, innerText, parseAmount);
+
+    return amount;
 }
 
 function parseAmount(text) {
-    return parseFloat(text.replace(/[+\sр]/g, "").replace(/,/g, "."));
+    return parseFloat(text.replace(/[+\s₽]/g, "").replace(/,/g, ".").replace(/−/g, "-"));
 }
 
 function firstChildText(element) {
@@ -84,6 +105,10 @@ function lastChildText(element) {
     if (element.lastChild && element.lastChild.nodeType == 3) {
         return element.lastChild.textContent.trim();
     }
+}
+
+function innerText(element) {
+    return element.innerText.trim();
 }
 
 function setBorder(element) {
@@ -106,30 +131,23 @@ function prepareToParse() {
 }
 
 function parseTransactions() {
+    let dateTime;
     let transactions = [];
-    let records = document.querySelectorAll("ul.tab-content-details-balance li:not(.dop)");
+    let records = document.querySelectorAll("div.OperationsList__list_7dZy_ > div.OperationsList__listItem_1ksLk"); // grid table-header & account-history
     for (let record of records) {
-        let description = record.querySelector(".name").pipe(setBorder, firstChildText);
-        let dateTime = record.querySelector(".name .info span:first-child").pipe(setBorder, lastChildText, parseDate);
-
-        let mccElement = record.querySelector(".name .info span:nth-child(2)");
-        let mcc = null;
-        if (mccElement) {
-            let mccText = mccElement.pipe(setBorder, firstChildText);
-            if (mccText) {
-                mcc = parseInt(mccText.match(/MCC: (\d{4})/)[1]);
-            }
+        if (record.childElementCount == 0) {
+            dateTime = record.pipe(setBorder, firstChildText, parseDate);
+            continue;
         }
 
-        let categoryElement = record.querySelector(".name .info span:nth-child(3)");
+        if (!dateTime || !(dateTime instanceof Date))
+            continue;
 
-        let category = "";
-        if (categoryElement)
-            category = categoryElement.pipe(setBorder, firstChildText);
+        let description = record.querySelector("span.OperationItem__description_3qZ0t").pipe(setBorder, innerText);
+        let category = record.querySelector("span.OperationItem__category_1cmuu").pipe(setBorder, innerText);
+        let amount = record.querySelector("span.OperationItem__value_3wApj").pipe(setBorder, innerText, parseAmount);
 
-        let amount = record.querySelector(".val > div").pipe(setBorder, firstChildText, parseAmount);
-
-        let transaction = { description, category, dateTime, amount, mcc };
+        let transaction = { description, category, dateTime, amount };
 
         console.log(JSON.stringify(transaction));
         transactions.push(transaction);
@@ -144,7 +162,7 @@ function sendTransactions(token, accountCode, data) {
     req.setRequestHeader("Content-Type", "application/json");
     req.setRequestHeader("Authorization", "Bearer " + token);
     req.onreadystatechange = function () {
-        if (req.readyState == 4 && req.status == 201) {
+        if (req.readyState == 4 && req.status == 204) {
             alert("Successful!");
         }
     };

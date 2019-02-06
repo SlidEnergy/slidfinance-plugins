@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     else if (request == "export") {
         try {
             exportTransactionsCommandHandler();
-            console.log("Export success");
+            console.log("Export completed");
             response = "ok";
         } catch (error) {
             console.log("Export error: " + error);

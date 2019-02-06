@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     else if (request == "export") {
         try {
             exportTransactionsCommandHandler();
-            console.log("Export success");
+            console.log("Export completed");
             response = "ok";
         } catch (error) {
             console.log("Export error: " + error);
@@ -63,7 +63,7 @@ function parseDate(text) {
     const months = { "января": 0, "февраля": 1, "марта": 2, "апреля": 3, "мая": 4, "июня": 5, "июля": 6, "августа": 7, "сентября": 8, "октября": 9, "ноября": 10, "декабря": 11 };
 
     let matches = text.match(/(\d{1,2}) (января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)[ ]{0,1}(\d{0,4})/);
-    if(matches) {
+    if (matches) {
         let year = new Date().getFullYear();
         if (matches[3])
             year = +matches[3];
@@ -72,13 +72,13 @@ function parseDate(text) {
     }
 
     matches = text.match(/(Сегодня|Вчера)/);
-    if(matches) {
-        if(matches[1] === 'Сегодня') {
+    if (matches) {
+        if (matches[1] === 'Сегодня') {
             let nowDate = new Date();
             let date = new Date(Date.UTC(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate()));
             return date;
         }
-        if(matches[1] === 'Вчера') {
+        if (matches[1] === 'Вчера') {
             let nowDate = new Date();
             let date = new Date(Date.UTC(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate()));
             date.setDate(date.getDate() - 1);
