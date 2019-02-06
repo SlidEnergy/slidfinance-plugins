@@ -9,12 +9,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
     else if (request == "export") {
         try {
-            exportTransactionsCommandHandler();
+            response = exportTransactionsCommandHandler();
+            response.data = JSON.stringify(response.data);
             console.log("Export completed");
-            response = "ok";
         } catch (error) {
             console.log("Export error: " + error);
-            response = "error";
+            response = null;
         }
     }
 
@@ -39,7 +39,9 @@ function exportTransactionsCommandHandler() {
     let balance = parseBalance();
 
     if (token && transactions && transactions.length)
-        sendTransactions(token, accountCode, { balance, transactions });
+        return { token, accountCode, data: { balance, transactions } };
+
+    return null;
 }
 
 function getToken() {
@@ -154,18 +156,4 @@ function parseTransactions() {
     }
 
     return transactions;
-}
-
-function sendTransactions(token, accountCode, data) {
-    var req = new XMLHttpRequest();
-    req.open('PATCH', 'https://myfinance-server.herokuapp.com/api/v1/accounts/' + accountCode, true);
-    req.setRequestHeader("Content-Type", "application/json");
-    req.setRequestHeader("Authorization", "Bearer " + token);
-    req.onreadystatechange = function () {
-        if (req.readyState == 4 && req.status == 204) {
-            alert("Successful!");
-        }
-    };
-
-    req.send(JSON.stringify(data));
 }
