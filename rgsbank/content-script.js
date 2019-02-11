@@ -144,7 +144,7 @@ function sendTransactions(token, accountCode, data) {
     req.setRequestHeader("Content-Type", "application/json");
     req.setRequestHeader("Authorization", "Bearer " + token);
     req.onreadystatechange = function () {
-        if (req.readyState == 4 && req.status == 201) {
+        if (req.readyState == 4 && req.status == 204) {
             alert("Successful!");
         }
     };
