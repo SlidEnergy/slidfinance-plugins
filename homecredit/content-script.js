@@ -2,35 +2,33 @@ console.log("content-script loaded")
 
 // Listen for messages from browser-action or background script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    var response;
-
     // Message to check whether this script has been injected
     if (request === "ping") {
-        // "Yeah, we're good"
-        response = "pong";
+        sendResponse("pong");
     }
     else if (request == "export") {
-        try {
-            exportTransactionsCommandHandler();
-            console.log("Export completed");
-            response = "ok";
-        } catch (error) {
-            console.log("Export error: " + error);
-            response = "error";
-        }
+        exportTransactionsCommandHandler()
+            .then(() => {
+                console.log("Export completed");
+                sendResponse("ok");
+            })
+            .catch(() => {
+                console.log("Export error: " + error);
+                sendResponse("error");
+            });
     }
 
-    sendResponse(response);
+    return true;
 });
 
-function exportTransactionsCommandHandler() {
-    let token = getToken();
+async function exportTransactionsCommandHandler() {
+    let token = await getToken();
     if (!token) {
         alert("Error: Token is " + token);
         throw Error("Error: Token is " + token);
     }
 
-    let accountCode = getAccountCode();
+    let accountCode = await getAccountCode();
     if (!accountCode) {
         alert("Error: accountCode is " + accountCode);
         throw Error("Error: accountCode is " + accountCode);
@@ -44,18 +42,11 @@ function exportTransactionsCommandHandler() {
 }
 
 function getToken() {
-    var auth = localStorage.getItem("auth");
-
-    try {
-        var jsonAuth = auth && JSON.parse(auth);
-    }
-    catch{ }
-
-    return jsonAuth && jsonAuth.token;
+    return new Promise(resolve => chrome.storage.sync.get(x => resolve(x && x.auth && x.auth.token)));
 }
 
 function getAccountCode() {
-    return localStorage.getItem("accountCode");
+    return new Promise(resolve => chrome.storage.sync.get(x => resolve(x && x.accountCode)));
 }
 
 let months = { "Января": 0, "Февраля": 1, "Марта": 2, "Апреля": 3, "Мая": 4, "Июня": 5, "Июля": 6, "Августа": 7, "Сентября": 8, "Октября": 9, "Ноября": 10, "Декабря": 11 };

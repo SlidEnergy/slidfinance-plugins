@@ -10,7 +10,8 @@
   },
   "permissions": [
     "*://*.tinkoff.ru/*",
-    "activeTab"
+    "activeTab",
+    "storage"
   ],
   "browser_action": {
     "default_icon": "icon.png",
