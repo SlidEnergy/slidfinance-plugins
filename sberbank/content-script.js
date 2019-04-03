@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 console.log("Export completed");
                 sendResponse("ok");
             })
-            .catch(() => {
+            .catch((error) => {
                 console.log("Export error: " + error);
                 sendResponse("error");
             });

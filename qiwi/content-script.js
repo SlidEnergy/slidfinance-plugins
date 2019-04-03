@@ -56,6 +56,8 @@ function parseDate(text) {
     let matches = text.match(/(\d{1,2}) (января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)[ ]{0,1}(\d{0,4})/);
     if (matches) {
         let year = new Date().getFullYear();
+        if (months[matches[2]] > new Date().getMonth())
+            year -= 1;
         if (matches[3])
             year = +matches[3];
         let date = new Date(Date.UTC(year, months[matches[2]], +matches[1]));
@@ -79,14 +81,11 @@ function parseDate(text) {
 }
 
 function parseBalance() {
-    let amount1 = document.querySelector(".total-amounts span.sum > nobr").pipe(setBorder, firstChildText);
-    let amount2 = document.querySelector(".total-amounts span.sum > span").pipe(setBorder, firstChildText);
-
-    return parseAmount(amount1 + amount2);
+    return document.querySelector("div[class^='account-info-amount']").pipe(setBorder, innerText, parseAmount);
 }
 
 function parseAmount(text) {
-    return parseFloat(text.replace(/[+\sр]/g, "").replace(/,/g, ".").replace(/–/g, "-"));
+    return parseFloat(text.replace(/[+\s]/g, "").replace(/,/g, ".").replace(/–/g, "-"));
 }
 
 function firstChildText(element) {
@@ -95,10 +94,8 @@ function firstChildText(element) {
     }
 }
 
-function lastChildText(element) {
-    if (element.lastChild && element.lastChild.nodeType == 3) {
-        return element.lastChild.textContent.trim();
-    }
+function innerText(element) {
+    return element.innerText.trim();
 }
 
 function setBorder(element) {
@@ -123,9 +120,9 @@ function prepareToParse() {
 function parseTransactions() {
     let dateTime;
     let transactions = [];
-    let records = document.querySelectorAll("div.box.expenses-box > div:nth-child(2) > div:not(.more-link)"); // grid table-header & account-history
+    let records = document.querySelectorAll("div[class^='content-column-self'] div[class^='history-block-date'], div[class^='content-column-self'] div[class*='history-item-self'][class*='history-item-success']");
     for (let record of records) {
-        let dateElement = record.querySelector(".g_12 small");
+        let dateElement = record.querySelector("span[class^='history-block-date-value']");
         if (dateElement) {
             dateTime = dateElement.pipe(setBorder, firstChildText, parseDate);
             continue;
@@ -134,17 +131,11 @@ function parseTransactions() {
         if (!dateTime || !(dateTime instanceof Date))
             continue;
 
-        let description = record.querySelector("div.operation-details > span:first-child").pipe(setBorder, firstChildText);
+        let description = record.querySelector("span[class^='history-item-header-info-provider']").pipe(setBorder, innerText);
 
-        let categoryElement = record.querySelector("div.operation-details > div div.combo-value > span:first-child");
-        let category = categoryElement ? categoryElement.pipe(setBorder, firstChildText) : "";
+        let amount = record.querySelector("span[class^='history-item-header-sum-amount']").pipe(setBorder, innerText, parseAmount);
 
-        let amount1 = record.querySelector("span.sum > nobr").pipe(setBorder, firstChildText);
-        let amount2 = record.querySelector("span.sum > span").pipe(setBorder, firstChildText);
-
-        let amount = parseAmount(amount1 + amount2);
-
-        let transaction = { description, category, dateTime, amount };
+        let transaction = { description, dateTime, amount };
 
         console.log(JSON.stringify(transaction));
         transactions.push(transaction);
