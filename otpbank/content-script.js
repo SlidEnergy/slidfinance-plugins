@@ -112,7 +112,7 @@ function prepareToParse() {
 
 function parseTransactions() {
     let transactions = [];
-    let records = document.querySelectorAll(".eredmenytabla tr.odd");
+    let records = document.querySelectorAll(".eredmenytabla > tbody > tr");
     for (let record of records) {
         var dateTime = record.querySelector("td:nth-child(2)").pipe(setBorder, innerText, parseDate);
         var description = record.querySelector("td:nth-child(3)").pipe(setBorder, innerText);
