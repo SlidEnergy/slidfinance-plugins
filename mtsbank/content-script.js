@@ -50,15 +50,13 @@ function getAccountCode() {
     return new Promise(resolve => chrome.storage.sync.get(x => resolve(x && x.accountCode)));
 }
 
-let months = { "Января": 0, "Февраля": 1, "Марта": 2, "Апреля": 3, "Мая": 4, "Июня": 5, "Июля": 6, "Августа": 7, "Сентября": 8, "Октября": 9, "Ноября": 10, "Декабря": 11 };
-
 function parseDate(text) {
-    let matches = text.match(/(\d{1,2}) (Января|Февраля|Марта|Апреля|Мая|Июня|Июля|Августа|Сентября|Октября|Ноября|Декабря) (\d{4})/);
-    return new Date(Date.UTC(+matches[3], months[matches[2]], +matches[1], 0, 0, 0));
+    let matches = text.match(/(\d{2})[\/.](\d{2})[\/.](\d{4})/);
+    return new Date(Date.UTC(+matches[3], +matches[2] - 1, +matches[1], 0, 0, 0));
 }
 
 function parseBalance() {
-    return document.querySelector("table.productBox.bg2 td.C").pipe(setBorder, innerText, parseAmount);
+    return document.querySelector(".mts_leftpanel_cards_card_amount").pipe(setBorder, innerText, parseAmount);
 }
 
 function parseAmount(text) {
@@ -97,30 +95,25 @@ function prepareToParse() {
 function parseTransactions() {
     let dateTime;
     let transactions = [];
-    let records = document.querySelectorAll(".accountMovementsBoxBody > tbody > tr")
+    let records = document.querySelectorAll(".fto-list-grid-operations-history .fto-listgrid-item")
     for (let record of records) {
-        let dateElement = record.querySelector(".DATE > span");
+        let dateElement = record.querySelector(".list-grid-group");
         if (dateElement) {
             dateTime = dateElement.pipe(setBorder, innerText, parseDate);
-            continue;
         }
 
         if (!dateTime || !(dateTime instanceof Date))
             continue;
 
-        record = record.querySelector(".workingArea");
-        if (record) {
-            let descriptionAndCategory = record.querySelectorAll(".CLIP");
+        let description = record.querySelector("div.row > div:nth-child(1) span").pipe(setBorder, firstChildText);
+        let matches = description.match(/\d+$/);
+        let mcc = matches && +matches[0];
+        let amount = record.querySelector("div.row > div:nth-child(2) span.fto-amount").pipe(setBorder, firstChildText, parseAmount);
 
-            let description = descriptionAndCategory[0].pipe(setBorder, innerText);
-            let category = descriptionAndCategory[1].pipe(setBorder, innerText);;
-            let amount = record.querySelector(".RED_AMOUNT, .GREEN_AMOUNT").pipe(setBorder, innerText, parseAmount);
-            let transaction = { description, category, dateTime, amount };
+        let transaction = { description, mcc, dateTime, amount };
 
-            console.log(JSON.stringify(transaction));
-            transactions.push(transaction);
-            continue;
-        }
+        console.log(JSON.stringify(transaction));
+        transactions.push(transaction);
     }
 
     return transactions;
