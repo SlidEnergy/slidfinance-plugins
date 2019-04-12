@@ -65,14 +65,14 @@ function parseDate(text) {
         return date;
     }
 
-    matches = text.match(/(сегодня|вчера)/);
+    matches = text.match(/(Сегодня|Вчера)/);
     if (matches) {
-        if (matches[1] === 'сегодня') {
+        if (matches[1] === 'Сегодня') {
             let nowDate = new Date();
             let date = new Date(Date.UTC(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate()));
             return date;
         }
-        if (matches[1] === 'вчера') {
+        if (matches[1] === 'Вчера') {
             let nowDate = new Date();
             let date = new Date(Date.UTC(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate()));
             date.setDate(date.getDate() - 1);
@@ -82,9 +82,7 @@ function parseDate(text) {
 }
 
 function parseBalance() {
-    let amount = document.querySelector("div[data-key='5003116562'].board__QbjcC .board__2Vhh9").pipe(setBorder, innerText, parseAmount);
-
-    return amount;
+    return document.querySelector("div[data-key='5003116562'] span[data-qa-id='sidebarItemMoney'] span:first-child").pipe(setBorder, innerText, parseAmount);
 }
 
 function parseAmount(text) {
@@ -129,7 +127,7 @@ function prepareToParse() {
 function parseTransactions() {
     let dateTime;
     let transactions = [];
-    let records = document.querySelectorAll("div.OperationsList__list_7dZy_ > div.OperationsList__listItem_1ksLk"); // grid table-header & account-history
+    let records = document.querySelectorAll("div[class^='OperationsList__list'] > div[class^='OperationsList__listItem']"); // grid table-header & account-history
     for (let record of records) {
         if (record.childElementCount == 0) {
             dateTime = record.pipe(setBorder, firstChildText, parseDate);
@@ -139,9 +137,9 @@ function parseTransactions() {
         if (!dateTime || !(dateTime instanceof Date))
             continue;
 
-        let description = record.querySelector("span.OperationItem__description_3qZ0t").pipe(setBorder, innerText);
-        let category = record.querySelector("span.OperationItem__category_1cmuu").pipe(setBorder, innerText);
-        let amount = record.querySelector("span.OperationItem__value_3wApj").pipe(setBorder, innerText, parseAmount);
+        let description = record.querySelector("p[class^='OperationItem__description']").pipe(setBorder, innerText);
+        let category = record.querySelector("p[class^='OperationItem__category']").pipe(setBorder, innerText);
+        let amount = record.querySelector("span[class^='OperationItem__value']").pipe(setBorder, innerText, parseAmount);
 
         let transaction = { description, category, dateTime, amount };
 
