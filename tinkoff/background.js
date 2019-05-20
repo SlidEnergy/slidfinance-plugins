@@ -32,16 +32,16 @@ function exportCommand(tabId) {
     });
 }
 
-function sendTransactions(token, accountCode, data) {
+function sendTransactions(token, data) {
     var req = new XMLHttpRequest();
-    req.open('PATCH', 'https://myfinance-server.herokuapp.com/api/v1/accounts/' + accountCode, true);
+    req.open('POST', 'https://myfinance-server.herokuapp.com/api/v1/import', true);
     req.setRequestHeader("Content-Type", "application/json");
     req.setRequestHeader("Authorization", "Bearer " + token);
     req.onreadystatechange = function () {
-        if (req.readyState == 4 && req.status == 204) {
+        if (req.readyState == 4 && req.status == 200) {
             alert("Successful!");
         }
     };
 
-    req.send(data);
+    req.send(JSON.stringify(data));
 }

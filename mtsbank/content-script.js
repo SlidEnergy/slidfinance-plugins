@@ -22,7 +22,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 async function exportTransactionsCommandHandler() {
-    let token = await getToken();
+    let token = await getTokenOrAuthorize();
     if (!token) {
         alert("Error: Token is " + token);
         throw Error("Error: Token is " + token);
@@ -39,11 +39,87 @@ async function exportTransactionsCommandHandler() {
     let balance = parseBalance();
 
     if (token && transactions && transactions.length)
-        sendTransactions(token, accountCode, { balance, transactions });
+        sendTransactions(token, { code: accountCode, balance, transactions });
+}
+
+async function getTokenOrAuthorize() {
+    let token = await getToken();
+    if (!token) {
+        let auth = await login();
+        setAuth(auth);
+        return auth.token;
+    }
+
+    let user = await getCurrentUser(token);
+    if (user)
+        return token;
+    else {
+        let auth = await login();
+        setAuth(auth);
+        return auth.token;
+    }
+}
+
+function getCurrentUser(token) {
+    return new Promise((resolve, reject) => {
+        var req = new XMLHttpRequest();
+        req.open('GET', 'https://myfinance-server.herokuapp.com/api/v1/users/current', true);
+        req.setRequestHeader("Content-Type", "application/json");
+        req.setRequestHeader("Authorization", "Bearer " + token);
+        req.onreadystatechange = function () {
+            if (req.readyState == 4) {
+                if (req.status == 200) {
+                    resolve(JSON.parse(req.response))
+                } else {
+                    resolve(null);
+                }
+            }
+        };
+
+        req.send();
+    });
+}
+
+async function login() {
+    let { email, password } = await getEmailAndPassword();
+
+    return new Promise((resolve, reject) => {
+        if (!email || !password) {
+            reject();
+            return;
+        }
+
+        var req = new XMLHttpRequest();
+        req.open('POST', 'https://myfinance-server.herokuapp.com/api/v1/users/login', true);
+        req.setRequestHeader("Content-Type", "application/json");
+        req.onreadystatechange = function () {
+            if (req.readyState == 4) {
+                if (req.status == 200) {
+                    resolve(JSON.parse(req.response));
+                } else {
+                    console.error(req);
+                    reject();
+                }
+            }
+        };
+
+        req.send(JSON.stringify({ email, password }));
+    });
+}
+
+function getEmailAndPassword() {
+    return new Promise(resolve => chrome.storage.sync.get(x => resolve({ email: x && x.email, password: x && x.password })));
 }
 
 function getToken() {
     return new Promise(resolve => chrome.storage.sync.get(x => resolve(x && x.auth && x.auth.token)));
+}
+
+function setAuth(auth) {
+    return new Promise(resolve => chrome.storage.sync.get(x => {
+        chrome.storage.sync.set(Object.assign(x, { auth }));
+        resolve(x && x.auth && x.auth.token);
+    }));
 }
 
 function getAccountCode() {
@@ -119,13 +195,13 @@ function parseTransactions() {
     return transactions;
 }
 
-function sendTransactions(token, accountCode, data) {
+function sendTransactions(token, data) {
     var req = new XMLHttpRequest();
-    req.open('PATCH', 'https://myfinance-server.herokuapp.com/api/v1/accounts/' + accountCode, true);
+    req.open('POST', 'https://myfinance-server.herokuapp.com/api/v1/import', true);
     req.setRequestHeader("Content-Type", "application/json");
     req.setRequestHeader("Authorization", "Bearer " + token);
     req.onreadystatechange = function () {
-        if (req.readyState == 4 && req.status == 204) {
+        if (req.readyState == 4 && req.status == 200) {
             alert("Successful!");
         }
     };
