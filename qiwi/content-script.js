@@ -161,7 +161,25 @@ function parseBalance() {
 }
 
 function parseAmount(text) {
-    return parseFloat(text.replace(/[+\s]/g, "").replace(/,/g, ".").replace(/–/g, "-"));
+    let negative = true;
+
+    if (text.search(/\+/) >= 0)
+        negative = false;
+
+    let dollars = false;
+
+    if (text.search(/\$/) >= 0)
+        dollars = true;
+
+    let value = parseFloat(text.replace(/[+$₽\s]/g, "").replace(/,/g, ".").replace(/–/g, "-"));
+
+    if (negative)
+        value *= -1;
+
+    if (dollars)
+        value *= 65;
+
+    return value;
 }
 
 function firstChildText(element) {
