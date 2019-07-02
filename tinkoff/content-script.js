@@ -117,7 +117,7 @@ function prepareToParse() {
 function parseTransactions() {
     let dateTime;
     let transactions = [];
-    let records = document.querySelectorAll("div[class^='OperationsList__list'] > div[class^='OperationsList__listItem']"); // grid table-header & account-history
+    let records = document.querySelectorAll("div[class^='TimelineList__list'] > div[class^='TimelineList__item']");
     for (let record of records) {
         if (record.childElementCount == 0) {
             dateTime = record.pipe(setBorder, firstChildText, parseDate);
@@ -127,9 +127,9 @@ function parseTransactions() {
         if (!dateTime || !(dateTime instanceof Date))
             continue;
 
-        let description = record.querySelector("p[class^='OperationItem__description']").pipe(setBorder, innerText);
-        let category = record.querySelector("p[class^='OperationItem__category']").pipe(setBorder, innerText);
-        let amount = record.querySelector("span[class^='OperationItem__value']").pipe(setBorder, innerText, parseAmount);
+        let description = record.querySelector("p[class^='TimelineItem__description']").pipe(setBorder, innerText);
+        let category = record.querySelector("p[class^='TimelineItem__subDescription']").pipe(setBorder, innerText);
+        let amount = record.querySelector("span[class^='TimelineItem__value']").pipe(setBorder, innerText, parseAmount);
 
         let transaction = { description, category, dateTime, amount };
 
