@@ -9,17 +9,17 @@ chrome.browserAction.onClicked.addListener(tab => {
             // ... inject content-script (null means current active tab)
             chrome.tabs.executeScript(tab.id, { file: "content-script.js" }, executeResponse => {
                 let e = chrome.runtime.lastError;
-                if(e !== undefined){
+                if (e !== undefined) {
                     console.log(tabId, executeResponse, e);
                 }
                 else {
                     exportCommand(tab.id);
                 }
             });
+        } else {
+            //# Register events or other stuff that send messages to the content-script
+            exportCommand(tab.id);
         }
-
-        //# Register events or other stuff that send messages to the content-script
-        exportCommand(tab.id);
     });
 });
 

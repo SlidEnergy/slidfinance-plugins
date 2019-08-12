@@ -72,7 +72,7 @@ function parseDate(text) {
 }
 
 function parseBalance() {
-    return document.querySelector("div[data-key='5003116562'] span[data-qa-id='sidebarItemMoney'] span:first-child").pipe(setBorder, innerText, parseAmount);
+    return document.querySelector("span[data-qa-id='sidebarItemMoney'] span:first-child").pipe(setBorder, innerText, parseAmount);
 }
 
 function parseAmount(text) {
@@ -128,7 +128,9 @@ function parseTransactions() {
             continue;
 
         let description = record.querySelector("p[class^='TimelineItem__description']").pipe(setBorder, innerText);
-        let category = record.querySelector("p[class^='TimelineItem__subDescription']").pipe(setBorder, innerText);
+        let categoryElement = record.querySelector("p[class^='TimelineItem__subDescription']");
+        let category = categoryElement ? categoryElement.pipe(setBorder, innerText) : "";
+
         let amount = record.querySelector("span[class^='TimelineItem__value']").pipe(setBorder, innerText, parseAmount);
 
         let transaction = { description, category, dateTime, amount };

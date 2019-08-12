@@ -127,9 +127,9 @@ function getAccountCode() {
 }
 
 function parseDate(text) {
-    const months = { "января": 0, "февраля": 1, "марта": 2, "апреля": 3, "мая": 4, "июня": 5, "июля": 6, "августа": 7, "сентября": 8, "октября": 9, "ноября": 10, "декабря": 11 };
+    const months = { "янв": 0, "фев": 1, "мар": 2, "апр": 3, "май": 4, "июн": 5, "июл": 6, "авг": 7, "сен": 8, "окт": 9, "ноя": 10, "дек": 11 };
 
-    let matches = text.match(/(\d{1,2}) (января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)[ ]{0,1}(\d{0,4})/);
+    let matches = text.replace(/[+\s]/g, " ").match(/(\d{1,2}) (янв|фев|мар|апр|май|июн|июл|авг|сен|окт|ноя|дек)[ ]{0,1}(\d{4}|\d{0})/);
     if (matches) {
         let year = new Date().getFullYear();
         if (matches[3])
@@ -155,8 +155,9 @@ function parseDate(text) {
 }
 
 function parseBalance() {
-    let amount1 = document.querySelector(".accounts-header__amount span.sum > nobr").pipe(setBorder, firstChildText);
-    let amount2 = document.querySelector(".accounts-header__amount span.sum > span").pipe(setBorder, firstChildText);
+    let amount1 = document.querySelector(".balance-currency .amount-sign").pipe(setBorder, innerText);
+    let amount2 = document.querySelector(".balance-currency .amount-integer-part").pipe(setBorder, innerText);
+    let amount3 = document.querySelector(".balance-currency .amount-decimal-part").pipe(setBorder, innerText);
 
     return parseAmount(amount1 + amount2);
 }
@@ -203,27 +204,37 @@ function prepareToParse() {
 function parseTransactions() {
     let dateTime;
     let transactions = [];
-    let records = document.querySelectorAll("div.expenses-box > div:nth-child(2) > div:not(.more-link)"); // grid table-header & account-history
+    let records = document.querySelectorAll("personal-events-list .date, personal-events-list personal-event");
     for (let record of records) {
-        if (record.className == "expenses-header") {
-            dateTime = record.pipe(setBorder, innerText, parseDate);
+        if (record.className == "date") {
+            dateTime = record.querySelector(":scope > span").pipe(setBorder, innerText, parseDate);
             continue;
         }
 
         if (!dateTime || !(dateTime instanceof Date))
             continue;
 
-        let description = record.querySelector("div.operation-details > div:first-child").pipe(setBorder, firstChildText);
+        let description = record.querySelector(".column-desc > div").pipe(setBorder, innerText);
 
-        let categoryElement = record.querySelector("div.operation-details div.combo-value > div:first-child");
-        let category = categoryElement ? categoryElement.pipe(setBorder, firstChildText) : "";
+        let categoryElement = record.querySelector(".operation-title + div");
+        let category = categoryElement ? categoryElement.pipe(setBorder, innerText) : "";
 
-        let amount1 = record.querySelector("span.sum > nobr").pipe(setBorder, firstChildText);
-        let amount2 = record.querySelector("span.sum > span").pipe(setBorder, firstChildText);
+        let mccElement = record.querySelector(".column-desc > div:nth-child(2)");
+        let mcc = null;
+        if (mccElement) {
+            let mccText = mccElement.pipe(setBorder, innerText);
+            if (mccText) {
+                mcc = parseInt(mccText.match(/МСС: (\d{4})/)[1]);
+            }
+        }
 
-        let amount = parseAmount(amount1 + amount2);
+        let amount1 = record.querySelector(".amount-sign").pipe(setBorder, innerText);
+        let amount2 = record.querySelector(".amount-integer-part").pipe(setBorder, innerText);
+        let amount3 = record.querySelector(".amount-decimal-part").pipe(setBorder, innerText);
 
-        let transaction = { description, category, dateTime, amount };
+        let amount = parseAmount(amount1 + amount2 + amount3);
+
+        let transaction = { description, category, dateTime, amount, mcc };
 
         console.log(JSON.stringify(transaction));
         transactions.push(transaction);

@@ -16,10 +16,10 @@ chrome.browserAction.onClicked.addListener(tab => {
                     exportCommand(tab.id);
                 }
             });
+        } else {
+            //# Register events or other stuff that send messages to the content-script
+            exportCommand(tab.id);
         }
-
-        //# Register events or other stuff that send messages to the content-script
-        exportCommand(tab.id);
     });
 });
 
