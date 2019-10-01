@@ -102,7 +102,7 @@ function getCurrentUser(token) {
 function login() {
     return new Promise((resolve, reject) => {
         var req = new XMLHttpRequest();
-        req.open('POST', 'https://myfinance-server.herokuapp.com/api/v1/users/login', true);
+        req.open('POST', 'https://myfinance-server.herokuapp.com/api/v1/users/token', true);
         req.setRequestHeader("Content-Type", "application/json");
         req.onreadystatechange = function () {
             if (req.readyState == 4) {
