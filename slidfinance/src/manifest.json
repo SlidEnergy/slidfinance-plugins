@@ -14,11 +14,8 @@
     ]
   },
   "page_action": {
-    "default_popup": "index.html"
-  },
-  "browser_action": {
-
-    "default_icon": "favicon.ico",
+    "default_popup": "index.html",
+    "default_icon": "assets/angular.png",
     "default_title": "Экспорт баланса и транзакций в систему SlidFinance."
   }
-},
+}
