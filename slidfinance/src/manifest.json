@@ -4,8 +4,10 @@
   "description": "Экспорт баланса и транзакций в систему SlidFinance",
   "manifest_version": 2,
   "permissions": [
+    "https://myfinance-frontend.herokuapp.com/",
     "activeTab",
-    "webNavigation"
+    "webNavigation",
+    "storage"
   ],
   "background": {
     "scripts": [
@@ -13,7 +15,7 @@
       "runtime.js"
     ]
   },
-  "page_action": {
+  "browser_action": {
     "default_popup": "index.html",
     "default_icon": "assets/angular.png",
     "default_title": "Экспорт баланса и транзакций в систему SlidFinance."
