@@ -3,9 +3,22 @@
   "version": "1.0",
   "description": "Экспорт баланса и транзакций в систему SlidFinance",
   "manifest_version": 2,
+  "permissions": [
+    "activeTab",
+    "webNavigation"
+  ],
+  "background": {
+    "scripts": [
+      "background.js",
+      "runtime.js"
+    ]
+  },
+  "page_action": {
+    "default_popup": "index.html"
+  },
   "browser_action": {
-    "default_popup": "index.html",
+
     "default_icon": "favicon.ico",
     "default_title": "Экспорт баланса и транзакций в систему SlidFinance."
   }
-}
+},
