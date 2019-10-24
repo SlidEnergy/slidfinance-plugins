@@ -1,6 +1,7 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
 import {Observable, of} from "rxjs";
 import {map, switchMap, tap} from "rxjs/operators";
+import {Router} from "@angular/router";
 
 interface TokenInfo {
   token: string,
@@ -20,10 +21,13 @@ export class AppComponent implements OnInit {
   supportedUrls = [
     '*://ib.homecredit.ru/*'
   ];
-  url: string;
-  supported = false;
 
-  constructor(private changeDetector: ChangeDetectorRef) {}
+  constructor(
+    private ngZone: NgZone,
+    private changeDetector: ChangeDetectorRef,
+    private router: Router
+  ) {
+  }
 
   ngOnInit() {
     this.getAuth().pipe(
@@ -34,9 +38,8 @@ export class AppComponent implements OnInit {
           return this.getSlidFinanceAuthData().pipe(tap(auth => this.saveAuth(auth)));
       }),
       map(auth => auth && auth.email),
-    ).subscribe(email =>
-    {
-      if(email) {
+    ).subscribe(email => {
+      if (email) {
         this.email = email;
         this.changeDetector.detectChanges();
       }
@@ -45,18 +48,25 @@ export class AppComponent implements OnInit {
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
       let activeTab = tabs[0];
       let url = activeTab.url;
-      this.url = url;
 
-      for(let regexp of this.supportedUrls) {
+      for (let regexp of this.supportedUrls) {
         let result = url.search('/' + regexp + '/');
-        this.supported = result >= 0;
+        if (result >= 0) {
+          this.navigate(['import']);
+          return;
+        }
       }
-      this.changeDetector.detectChanges();
+
+      this.navigate(['home']);
     });
   }
 
-  getAuth() : Observable<TokenInfo> {
-    return new Observable(subscriber  => {
+  public navigate(commands: any[]): void {
+    this.ngZone.run(() => this.router.navigate(commands)).then();
+  }
+
+  getAuth(): Observable<TokenInfo> {
+    return new Observable(subscriber => {
       chrome.storage.sync.get(x => subscriber.next(x && x.auth));
     });
   }
@@ -66,7 +76,7 @@ export class AppComponent implements OnInit {
   }
 
   getSlidFinanceAuthData(): Observable<any> {
-    return new Observable(subscriber  => {
+    return new Observable(subscriber => {
       console.log("Getting auth data...");
 
       // Открываем вкладку в новом окне и выполняем скрипт в созданной вкладке.
@@ -74,16 +84,17 @@ export class AppComponent implements OnInit {
       chrome.tabs.create({
         active: false,
         url: 'https://myfinance-frontend.herokuapp.com'
-      }, function(tab) {
+      }, function (tab) {
         chrome.tabs.executeScript(tab.id, {
           code: 'localStorage.getItem("auth");'
-        }, function(result: any) {
+        }, function (result: any) {
           chrome.tabs.remove(tab.id);
 
           let auth = undefined;
           try {
             auth = result && JSON.parse(result);
-          } catch (e) { }
+          } catch (e) {
+          }
 
           subscriber.next(auth);
         });
