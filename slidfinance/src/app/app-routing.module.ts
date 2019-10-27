@@ -12,7 +12,7 @@ const routes: Routes = [
     path: 'home', component: HomeComponent
   },
   {
-    path: 'import', component: ImportComponent
+    path: 'import/:bank', component: ImportComponent
   }
 ];
 

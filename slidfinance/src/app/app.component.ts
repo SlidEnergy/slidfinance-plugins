@@ -2,12 +2,8 @@ import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
 import {Observable, of} from "rxjs";
 import {map, switchMap, tap} from "rxjs/operators";
 import {Router} from "@angular/router";
-
-interface TokenInfo {
-  token: string,
-  refreshToken: string,
-  email: string
-}
+import {supportedBanks} from "src/app/banks/supported-banks";
+import {AuthService} from "./auth/auth.service";
 
 @Component({
   selector: 'app-root',
@@ -16,26 +12,23 @@ interface TokenInfo {
 })
 export class AppComponent implements OnInit {
   title = 'SlidFinance';
-
   email: string;
-  supportedUrls = [
-    '*://ib.homecredit.ru/*'
-  ];
 
   constructor(
     private ngZone: NgZone,
     private changeDetector: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
   }
 
   ngOnInit() {
-    this.getAuth().pipe(
+    this.authService.getAuth().pipe(
       switchMap(auth => {
         if (auth && auth.token && auth.refreshToken && auth.email)
           return of(auth);
         else
-          return this.getSlidFinanceAuthData().pipe(tap(auth => this.saveAuth(auth)));
+          return this.getSlidFinanceAuthData().pipe(switchMap(auth => this.authService.saveAuth(auth).pipe(map(x => auth))));
       }),
       map(auth => auth && auth.email),
     ).subscribe(email => {
@@ -49,10 +42,10 @@ export class AppComponent implements OnInit {
       let activeTab = tabs[0];
       let url = activeTab.url;
 
-      for (let regexp of this.supportedUrls) {
-        let result = url.search('/' + regexp + '/');
+      for (let bank of supportedBanks) {
+        let result = url.indexOf(bank.url);
         if (result >= 0) {
-          this.navigate(['import']);
+          this.navigate(['import', bank.name]);
           return;
         }
       }
@@ -63,16 +56,6 @@ export class AppComponent implements OnInit {
 
   public navigate(commands: any[]): void {
     this.ngZone.run(() => this.router.navigate(commands)).then();
-  }
-
-  getAuth(): Observable<TokenInfo> {
-    return new Observable(subscriber => {
-      chrome.storage.sync.get(x => subscriber.next(x && x.auth));
-    });
-  }
-
-  saveAuth(auth: TokenInfo) {
-    chrome.storage.sync.set({auth});
   }
 
   getSlidFinanceAuthData(): Observable<any> {

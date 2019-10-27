@@ -6,7 +6,10 @@ module.exports = {...config,
   plugins: [new ExtensionReloader({
     reloadPage: true,
     entries: {
-      background: 'background'
+      background: 'background',
+      "banks/tinkoff": 'src/app/banks/tinkoff.ts',
+      utils: 'src/app/banks/utils.ts',
+      parser: 'src/app/banks/parser.ts'
     }
   })]
 }
