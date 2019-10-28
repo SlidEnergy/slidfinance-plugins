@@ -1,9 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {map, tap} from "rxjs/operators";
+import {map, switchMap, tap} from "rxjs/operators";
 import {supportedBanks} from "./banks/supported-banks";
 import {AuthService} from "./auth/auth.service";
 import {ChromeApiService} from "./chrome-api";
+import {of, throwError} from "rxjs";
+import {ImportService} from "./import.service";
 
 @Component({
   selector: 'app-import',
@@ -13,11 +15,13 @@ import {ChromeApiService} from "./chrome-api";
 export class ImportComponent implements OnInit {
   bank: { url: string, name: string, file: string };
   accountCode: string = 'tinkoff';
+  message: string;
 
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
-    private chromeApi: ChromeApiService
+    private chromeApi: ChromeApiService,
+    private importService: ImportService
   ) {
 
   }
@@ -33,59 +37,75 @@ export class ImportComponent implements OnInit {
   }
 
   import() {
-    this.chromeApi.activeTab.subscribe(activeTab => {
-      let tabId = activeTab.id;
-      console.log('ping...');
+    this.chromeApi.activeTab.pipe(
+      map(activeTab => activeTab.id),
+      switchMap(tabId => {
+        return this.pingAndInjectContentScriptsIfRequired(tabId).pipe(
+          switchMap(() => this.exportCommand(tabId))
+        )
+      }),
+      map(response => {
+        if(response && response.balance != undefined && response.transactions != undefined)
+          return response;
 
-      // Send message to check whether the script has already been injected
-      chrome.tabs.sendMessage(tabId, "ping", pingResponse => {
+        throwError(response);
+      }),
+      switchMap(data => this.importService.import(this.accountCode, data))
+    )
+      .subscribe(
+        value => this.message = "Данные успешно импортированы",
+        error => this.message = error
+      );
+  }
+
+  pingAndInjectContentScriptsIfRequired(tabId: number) {
+    console.log('ping...');
+    // Send message to check whether the script has already been injected
+    return this.chromeApi.sendMessage(tabId, "ping").pipe(
+      switchMap(pingResponse => {
         // If no message handler exists (i.e. content-script hasn't been injected before),
         // this callback is called right away with no arguments, so ...
         if (typeof pingResponse === "undefined") {
-          console.log('inject...');
-          // ... inject content-script (null means current active tab)
-          this.chromeApi.executeScripts(tabId, [
-              {file: 'runtime.js'},
-              {file: 'utils.js'},
-              {file: 'parser.js'},
-              {file: './banks/' + this.bank.file}
-            ],
-            executeResponse => {
-              let e = chrome.runtime.lastError;
-              if (e !== undefined) {
-                console.log(tabId, executeResponse, e);
-              } else {
-                console.log('export command...');
-                this.exportCommand(tabId);
-              }
-            });
+          // ... inject content-script
+          return this.injectContentScripts(tabId, this.bank);
         } else {
-          console.log('export command...');
-          //# Register events or other stuff that send messages to the content-script
-          this.exportCommand(tabId);
+          return of(undefined);
         }
-      });
-    });
+      }));
+  }
+
+  injectContentScripts(tabId, bank: { file: string }) {
+    console.log('inject...');
+    return this.chromeApi.executeScripts(tabId, [
+      {file: 'runtime.js'},
+      {file: 'utils.js'},
+      {file: 'parser.js'},
+      {file: './banks/' + bank.file}
+    ]).pipe(map(executeResponse => {
+      let e = chrome.runtime.lastError;
+      if (e !== undefined) {
+        console.log(tabId, executeResponse, e);
+      } else {
+        console.log('export command...');
+        this.exportCommand(tabId);
+      }
+    }));
   }
 
   exportCommand(tabId) {
-    this.authService.getAuth().pipe(map(auth => auth.token))
-      .subscribe(token => {
+    console.log('export command...');
+    return this.authService.getAuth().pipe(
+      map(auth => auth.token),
+      switchMap(token => {
         if (!token) {
           alert("Error: Token is " + token);
           return;
         }
 
         console.log('export...');
-
-        chrome.tabs.sendMessage(tabId, "export", response => {
+        return this.chromeApi.sendMessage(tabId, "export").pipe(tap(response => {
           console.log('got response');
-          if (response) {
-            response = {...response, accountCode: this.accountCode};
-//            sendTransactions(token, response.data);
-            console.log(response);
-          }
-        });
-      });
+        }));
+      }));
   }
 }

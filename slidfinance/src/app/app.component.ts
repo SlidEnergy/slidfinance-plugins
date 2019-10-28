@@ -24,12 +24,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.authService.getAuth().pipe(
-      switchMap(auth => {
-        if (auth && auth.token && auth.refreshToken && auth.email)
-          return of(auth);
-        else
-          return this.getSlidFinanceAuthData().pipe(switchMap(auth => this.authService.saveAuth(auth).pipe(map(x => auth))));
-      }),
       map(auth => auth && auth.email),
     ).subscribe(email => {
       if (email) {
@@ -58,30 +52,5 @@ export class AppComponent implements OnInit {
     this.ngZone.run(() => this.router.navigate(commands)).then();
   }
 
-  getSlidFinanceAuthData(): Observable<any> {
-    return new Observable(subscriber => {
-      console.log("Getting auth data...");
 
-      // Открываем вкладку в новом окне и выполняем скрипт в созданной вкладке.
-
-      chrome.tabs.create({
-        active: false,
-        url: 'https://myfinance-frontend.herokuapp.com'
-      }, function (tab) {
-        chrome.tabs.executeScript(tab.id, {
-          code: 'localStorage.getItem("auth");'
-        }, function (result: any) {
-          chrome.tabs.remove(tab.id);
-
-          let auth = undefined;
-          try {
-            auth = result && JSON.parse(result);
-          } catch (e) {
-          }
-
-          subscriber.next(auth);
-        });
-      });
-    });
-  }
 }

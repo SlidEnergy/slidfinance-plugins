@@ -11,17 +11,24 @@ export class ChromeApiService {
     return new Observable(subscriber => chrome.tabs.query({active: true, currentWindow: true}, tabs => subscriber.next(tabs[0])));
   }
 
-  private createCallback(tabId: number | null, injectDetails: InjectDetails, innerCallback: (executeResponse) => void) {
+  sendMessage(tabId: number, message: string): Observable<any> {
+    return new Observable( subscriber =>
+      chrome.tabs.sendMessage(tabId, message, response => subscriber.next(response)));
+  }
+
+  private createCallback(tabId: number | null, injectDetails: InjectDetails, innerCallback: (executeResponse) => void) : () => void {
     return () => chrome.tabs.executeScript(tabId, injectDetails, innerCallback);
   }
 
-  executeScripts(tabId: number | null, injectDetailsArray: InjectDetails[], callback: (executeResponse?) => void) {
-    let innerCallback = callback;
+  executeScripts(tabId: number | null, injectDetailsArray: InjectDetails[]) : Observable<any> {
+    return new Observable(subscriber => {
+      let innerCallback = (executeResponse) => subscriber.next(executeResponse);
 
-    for (let i = injectDetailsArray.length - 1; i >= 0; --i)
-      innerCallback = this.createCallback(tabId, injectDetailsArray[i], innerCallback);
+      for (let i = injectDetailsArray.length - 1; i >= 0; --i)
+        innerCallback = this.createCallback(tabId, injectDetailsArray[i], innerCallback);
 
-    if (innerCallback !== null)
-      innerCallback();   // execute outermost function
+      if (innerCallback !== null)
+        innerCallback(undefined);   // execute outermost function
+    });
   }
 }
