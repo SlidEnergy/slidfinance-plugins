@@ -11,7 +11,7 @@ export class AuthService {
   constructor() { }
 
   getAuth() {
-    return this.getAuthFromStorage().pipe(
+    return this.loadAuth().pipe(
       switchMap(auth => {
         if (auth && auth.token && auth.refreshToken && auth.email)
           return of(auth);
@@ -47,15 +47,21 @@ export class AuthService {
     });
   }
 
-  private getAuthFromStorage(): Observable<TokenInfo> {
-    return new Observable(subscriber => {
-      chrome.storage.sync.get(x => subscriber.next(x && x.auth));
-    });
+  private loadAuth(): Observable<TokenInfo> {
+    return of(this.auth);
+    // return new Observable(subscriber => {
+    //   chrome.storage.sync.get(x => subscriber.next(x && x.auth));
+    // });
   }
 
   private saveAuth(auth: TokenInfo) {
-    return new Observable(subscriber => {
-      chrome.storage.sync.set({auth}, () => subscriber.next(true));
-    })
+    this.auth = auth;
+    return of(true);
+
+    // return new Observable(subscriber => {
+    //   chrome.storage.sync.set({auth}, () => subscriber.next(true));
+    // });
   }
+
+  auth: TokenInfo
 }

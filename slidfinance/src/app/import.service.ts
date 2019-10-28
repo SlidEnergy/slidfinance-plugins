@@ -24,7 +24,7 @@ export class ImportService {
         headers = headers.set('Authorization', 'Bearer ' + token);
         headers = headers.set("Content-Type", "application/json");
 
-        return this.http.post(this.url, {...data, accountCode}, {headers: headers});
+        return this.http.post(this.url, {...data, code: accountCode}, {headers: headers});
       }));
   }
 }

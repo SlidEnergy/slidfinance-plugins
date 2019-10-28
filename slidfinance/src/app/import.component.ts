@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {map, switchMap, tap} from "rxjs/operators";
 import {supportedBanks} from "./banks/supported-banks";
@@ -16,12 +16,14 @@ export class ImportComponent implements OnInit {
   bank: { url: string, name: string, file: string };
   accountCode: string = 'tinkoff';
   message: string;
+  success = false;
 
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
     private chromeApi: ChromeApiService,
-    private importService: ImportService
+    private importService: ImportService,
+    private changeDetector: ChangeDetectorRef,
   ) {
 
   }
@@ -53,8 +55,18 @@ export class ImportComponent implements OnInit {
       switchMap(data => this.importService.import(this.accountCode, data))
     )
       .subscribe(
-        value => this.message = "Данные успешно импортированы",
-        error => this.message = error
+        value => {
+          this.message = "Данные успешно импортированы";
+          this.success = true;
+          console.log("import completed");
+          this.changeDetector.detectChanges();
+        },
+        error => {
+          this.message = error;
+          this.success = false;
+          console.log("import error");
+          this.changeDetector.detectChanges();
+        }
       );
   }
 
