@@ -1,12 +1,12 @@
 export function toISOStringWithoutTimeZone(dateTime: Date) {
-  let MM = dateTime.getMonth() + 1;
-  let dd = dateTime.getDate();
-  let hh = dateTime.getHours();
-  let mm = dateTime.getMinutes();
-  let ss = dateTime.getSeconds();
+  let MM = dateTime.getUTCMonth() + 1;
+  let dd = dateTime.getUTCDate();
+  let hh = dateTime.getUTCHours();
+  let mm = dateTime.getUTCMinutes();
+  let ss = dateTime.getUTCSeconds();
 
   let date = [
-    dateTime.getFullYear(),
+    dateTime.getUTCFullYear(),
     (MM > 9 ? '' : '0') + MM,
     (dd > 9 ? '' : '0') + dd,
   ].join('-');
@@ -58,15 +58,15 @@ export function parseDate(text) {
     "декабря": 11
   };
 
-  let matches = text.match(/(\d{1,2}) (января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)[ ]{0,1}(\d{0,4})/);
+  let matches = text.match(/(\d{1,2}) (января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)\s?(\d{0,4})/i);
   if (matches) {
     let year = new Date().getFullYear();
     if (matches[3])
       year = +matches[3];
-    return new Date(Date.UTC(year, months[matches[2]], +matches[1]));
+    return new Date(Date.UTC(year, months[matches[2].toLowerCase()], +matches[1]));
   }
 
-  matches = text.match(/(Сегодня|Вчера)/);
+  matches = text.match(/(Сегодня|Вчера)/i);
   if (matches) {
     if (matches[1] === 'Сегодня') {
       let nowDate = new Date();

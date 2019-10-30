@@ -7,9 +7,8 @@ module.exports = {...config,
     reloadPage: true,
     entries: {
       background: 'background',
-      "banks/tinkoff": 'src/app/banks/tinkoff.ts',
-      utils: 'src/app/banks/utils.ts',
-      parser: 'src/app/banks/parser.ts'
+      "content_scripts/tinkoff": 'src/app/banks/tinkoff.ts',
+      "content_scripts/homecredit": "src/app/banks/homecredit.ts",
     }
   })]
 }

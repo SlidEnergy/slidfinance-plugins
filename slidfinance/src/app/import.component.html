@@ -1,3 +1,4 @@
-<input type="text" [value]="accountCode"/>
+<div>Обнаружен {{bank.title}}</div>
+<input type="text" [(ngModel)]="accountCode"/>
 <button (click)="import()">Импортировать</button>
 <div [ngClass]="success ? 'green' : 'red' ">{{message}}</div>

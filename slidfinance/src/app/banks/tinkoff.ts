@@ -1,5 +1,5 @@
-import {firstChildText, innerText, parseAmount, parseDate, pipe, setBorder, toISOStringWithoutTimeZone} from "./utils";
-import {registerParser} from "./parser";
+import {firstChildText, innerText, parseAmount, parseDate, pipe, setBorder, toISOStringWithoutTimeZone} from "./shared/utils";
+import {registerParser} from "./shared/parser";
 
 registerParser(exportCommandHandler);
 

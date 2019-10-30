@@ -1,8 +1,21 @@
+const path = require('path');
+
 module.exports = {
   entry: {
     background: 'src/background.ts',
-    "banks/tinkoff": 'src/app/banks/tinkoff.ts',
-    utils: 'src/app/banks/utils.ts',
-    parser: 'src/app/banks/parser.ts'
+    "content_scripts/tinkoff": 'src/app/banks/tinkoff.ts',
+    "content_scripts/homecredit": 'src/app/banks/homecredit.ts',
   },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          name: "content_scripts/commons",
+          chunks: "initial",
+          minChunks: 2,
+          minSize: 0
+        }
+      }
+    },
+  }
 }

@@ -6,6 +6,7 @@ import {AuthService} from "./auth/auth.service";
 import {ChromeApiService} from "./chrome-api";
 import {of, throwError} from "rxjs";
 import {ImportService} from "./import.service";
+import {Bank} from "./bank";
 
 @Component({
   selector: 'app-import',
@@ -13,8 +14,8 @@ import {ImportService} from "./import.service";
   styleUrls: ['./import.component.scss']
 })
 export class ImportComponent implements OnInit {
-  bank: { url: string, name: string, file: string };
-  accountCode: string = 'tinkoff';
+  bank: Bank;
+  accountCode: string;
   message: string;
   success = false;
 
@@ -90,9 +91,8 @@ export class ImportComponent implements OnInit {
     console.log('inject...');
     return this.chromeApi.executeScripts(tabId, [
       {file: 'runtime.js'},
-      {file: 'utils.js'},
-      {file: 'parser.js'},
-      {file: './banks/' + bank.file}
+      {file: './content_scripts/commons.js'},
+      {file: './content_scripts/' + bank.file}
     ]).pipe(map(executeResponse => {
       let e = chrome.runtime.lastError;
       if (e !== undefined) {
