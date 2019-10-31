@@ -1,28 +1,24 @@
-//chrome.runtime.onInstalled.addListener(() => {
-  //chrome.webNavigation.onCompleted.addListener(() => {
-  //   chrome.tabs.query({ active: true, currentWindow: true }, ([{ id }]) => {
-  //     chrome.pageAction.show(id);
-  //   });
-  // }, { url: [{ urlMatches: 'google.com' }]
+import {supportedBanks} from "./app/supported-banks";
 
+chrome.runtime.onInstalled.addListener(() => {
+  let urls: {urlMatches: string}[] = supportedBanks.map(bank => ({ urlMatches: bank.url}));
 
-  //});
-//});
+  chrome.webNavigation.onCompleted.addListener(() => {
+      chrome.tabs.query({active: true, currentWindow: true}, ([{id}]) => {
+        //chrome.pageAction.show(id);
+        chrome.notifications.onClicked.addListener((notificationId => {
 
-function getSlidFinanceAuthData() {
-  console.log("Getting auth data...")
-  // Открываем вкладку в новом окне и выполняем скрипт в созданной вкладке.
+        }));
 
-  chrome.tabs.create({
-    active: false,
-    url: 'https://myfinance-frontend.herokuapp.com'
-  }, function(tab) {
-    chrome.tabs.executeScript(tab.id, {
-      code: 'localStorage.getItem("auth");'
-    }, function(result) {
-      chrome.tabs.remove(tab.id);
-      console.log("Result:\n");
-      console.log(result);
+        chrome.notifications.create({
+          type: "basic",
+          iconUrl: "assets/angular.png",
+          title: "SlidFinance",
+          message: "Ваш банк поддерживается и Вы можете экспортировать ваши операции в систему SlidFinance",
+        })
+      });
+    },
+    {
+      url: urls
     });
-  });
-}
+});

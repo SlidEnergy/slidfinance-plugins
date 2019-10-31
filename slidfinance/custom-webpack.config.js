@@ -20,6 +20,7 @@ module.exports = {
       cacheGroups: {
         commons: {
           name: "content_scripts/commons",
+          test: /[\\/]src[\\/]content_scripts[\\/]/,
           chunks: "initial",
           minChunks: 2,
           minSize: 0
@@ -27,4 +28,4 @@ module.exports = {
       }
     },
   }
-}
+};

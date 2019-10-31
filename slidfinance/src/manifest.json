@@ -7,12 +7,13 @@
     "https://myfinance-frontend.herokuapp.com/",
     "activeTab",
     "webNavigation",
-    "storage"
+    "storage",
+    "notifications"
   ],
   "background": {
     "scripts": [
-      "background.js",
-      "runtime.js"
+      "runtime.js",
+      "background.js"
     ]
   },
   "browser_action": {
