@@ -129,6 +129,32 @@ export function parseDate(text) {
   }
 }
 
-export function parseAmount(text) {
-  return parseFloat(text.replace(/[+\s₽]/g, "").replace(/,/g, ".").replace(/−/g, "-"));
+export function parseAmount(text, defaultNegative = false) {
+  text = text.trim();
+
+  let toggleNegative = false;
+
+  if(defaultNegative) {
+    toggleNegative = text.search(/\+/) < 0;
+  }
+
+  let inUsd = false;
+
+  if (text.search(/\$/) >= 0)
+    inUsd = true;
+
+  let value = parseFloat(
+    text
+      .replace(/[\s+₽р]/g, "")
+      .replace(/,/g, ".")
+      .replace(/[−–]/g, "-")
+  );
+
+  if (toggleNegative)
+    value *= -1;
+
+  if (inUsd)
+    value *= 65;
+
+  return value;
 }

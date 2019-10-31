@@ -1,4 +1,4 @@
-import {parseDate, toISOStringWithoutTimeZone} from "./utils";
+import {parseAmount, parseDate, toISOStringWithoutTimeZone} from "./utils";
 import * as moment from 'moment';
 
 describe('to iso string without timezone', () => {
@@ -8,7 +8,7 @@ describe('to iso string without timezone', () => {
   });
 });
 
-describe('utils', () => {
+describe('parse date', () => {
   let today = moment().startOf('day');
   let  yesterday = today.clone().add(-1, 'day');
   let  beforeYesterday = today.clone().add(-2, 'day');
@@ -98,5 +98,94 @@ describe('utils', () => {
   it('should be parsed послезавтра', () => {
     let date = parseDate("послезавтра");
     expect(+date).toEqual(+afterTomorrow);
+  });
+});
+
+describe('parse amount', () => {
+  it('should be parsed -0.00', () => {
+    let amount = parseAmount("-0.00");
+    expect(amount).toEqual(-0);
+  });
+  it('should be parsed -0.12', () => {
+    let amount = parseAmount("-0.12");
+    expect(amount).toEqual(-0.12);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("0.00");
+    expect(amount).toEqual(0);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("0.12");
+    expect(amount).toEqual(0.12);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("-123.00");
+    expect(amount).toEqual(-123);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("123.45");
+    expect(amount).toEqual(123.45);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("123.00");
+    expect(amount).toEqual(123);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("123.45");
+    expect(amount).toEqual(123.45);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("1 234.00");
+    expect(amount).toEqual(1234);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("1 234.56");
+    expect(amount).toEqual(1234.56);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("-1 234.00");
+    expect(amount).toEqual(-1234.00);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("-1 234.56");
+    expect(amount).toEqual(-1234.56);
+  });
+
+
+  it('should be parsed', () => {
+    let amount = parseAmount("– 1 234.56");
+    expect(amount).toEqual(-1234.56);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("− 1 234.56");
+    expect(amount).toEqual(-1234.56);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("- 1 234,56");
+    expect(amount).toEqual(-1234.56);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("- 1 234,56 ₽");
+    expect(amount).toEqual(-1234.56);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("- 1 234,56 р");
+    expect(amount).toEqual(-1234.56);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("- 1 234,56 $");
+    expect(amount).toEqual(-1234.56 * 65);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("+ 1 234,56");
+    expect(amount).toEqual(1234.56);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("1 234,56 р", true);
+    expect(amount).toEqual(-1234.56);
+  });
+  it('should be parsed', () => {
+    let amount = parseAmount("+ 1 234,56 р", true);
+    expect(amount).toEqual(1234.56);
   });
 });
