@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {map, switchMap, tap} from "rxjs/operators";
-import {supportedBanks} from "./banks/supported-banks";
+import {supportedBanks} from "./supported-banks";
 import {AuthService} from "./auth/auth.service";
 import {ChromeApiService} from "./chrome-api";
 import {of, throwError} from "rxjs";

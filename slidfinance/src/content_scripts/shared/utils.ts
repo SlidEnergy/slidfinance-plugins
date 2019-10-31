@@ -26,6 +26,12 @@ export function firstChildText(element) {
   }
 }
 
+export function lastChildText(element) {
+  if (element.lastChild && element.lastChild.nodeType == 3) {
+    return element.lastChild.textContent.trim();
+  }
+}
+
 export function innerText(element) {
   return element.innerText.trim();
 }
@@ -134,7 +140,7 @@ export function parseAmount(text, defaultNegative = false) {
 
   let toggleNegative = false;
 
-  if(defaultNegative) {
+  if (defaultNegative) {
     toggleNegative = text.search(/\+/) < 0;
   }
 

@@ -2,7 +2,7 @@ import {ChangeDetectorRef, Component, NgZone, OnInit} from '@angular/core';
 import {Observable, of} from "rxjs";
 import {map, switchMap, tap} from "rxjs/operators";
 import {Router} from "@angular/router";
-import {supportedBanks} from "src/app/banks/supported-banks";
+import {supportedBanks} from "src/app/supported-banks";
 import {AuthService} from "./auth/auth.service";
 
 @Component({
