@@ -28,12 +28,50 @@ describe('utils', () => {
     expect(+date).toEqual(Date.parse("2019-09-25T00:00:00"));
   });
 
+  it('should be parsed', () => {
+    let date = parseDate("25 Сент 2019");
+    expect(+date).toEqual(Date.parse("2019-09-25T00:00:00"));
+  });
+  it('should be parsed', () => {
+    let date = parseDate("25 сент 2019");
+    expect(+date).toEqual(Date.parse("2019-09-25T00:00:00"));
+  });
+  it('should be parsed 25 сентября', () => {
+    let date = parseDate("25 сент");
+    expect(+date).toEqual(Date.parse("2019-09-25T00:00:00"));
+  });
+
   it('should be parsed 25.09.2019', () => {
     let date = parseDate("25.09.2019");
     expect(+date).toEqual(Date.parse("2019-09-25T00:00:00"));
   });
   it('should be parsed 25.09', () => {
     let date = parseDate("25.09");
+    expect(+date).toEqual(Date.parse("2019-09-25T00:00:00"));
+  });
+  it('should be parsed 25.9.2019', () => {
+    let date = parseDate("25.9.2019");
+    expect(+date).toEqual(Date.parse("2019-09-25T00:00:00"));
+  });
+  it('should be parsed 25.9', () => {
+    let date = parseDate("25.9");
+    expect(+date).toEqual(Date.parse("2019-09-25T00:00:00"));
+  });
+
+  it('should be parsed 25/09/2019', () => {
+    let date = parseDate("25/09/2019");
+    expect(+date).toEqual(Date.parse("2019-09-25T00:00:00"));
+  });
+  it('should be parsed 25/09', () => {
+    let date = parseDate("25/09");
+    expect(+date).toEqual(Date.parse("2019-09-25T00:00:00"));
+  });
+  it('should be parsed 25/9/2019', () => {
+    let date = parseDate("25/9/2019");
+    expect(+date).toEqual(Date.parse("2019-09-25T00:00:00"));
+  });
+  it('should be parsed 25/9', () => {
+    let date = parseDate("25/9");
     expect(+date).toEqual(Date.parse("2019-09-25T00:00:00"));
   });
 
