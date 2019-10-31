@@ -1,12 +1,12 @@
 export function toISOStringWithoutTimeZone(dateTime: Date) {
-  let MM = dateTime.getUTCMonth() + 1;
-  let dd = dateTime.getUTCDate();
-  let hh = dateTime.getUTCHours();
-  let mm = dateTime.getUTCMinutes();
-  let ss = dateTime.getUTCSeconds();
+  let MM = dateTime.getMonth() + 1;
+  let dd = dateTime.getDate();
+  let hh = dateTime.getHours();
+  let mm = dateTime.getMinutes();
+  let ss = dateTime.getSeconds();
 
   let date = [
-    dateTime.getUTCFullYear(),
+    dateTime.getFullYear(),
     (MM > 9 ? '' : '0') + MM,
     (dd > 9 ? '' : '0') + dd,
   ].join('-');
@@ -44,40 +44,67 @@ export function pipe(element: Element, ...ops) {
 
 export function parseDate(text) {
   const months = {
-    "января": 0,
-    "февраля": 1,
-    "марта": 2,
-    "апреля": 3,
-    "мая": 4,
-    "июня": 5,
-    "июля": 6,
-    "августа": 7,
-    "сентября": 8,
-    "октября": 9,
-    "ноября": 10,
-    "декабря": 11
+    "января": 1,
+    "февраля": 2,
+    "марта": 3,
+    "апреля": 4,
+    "мая": 5,
+    "июня": 6,
+    "июля": 7,
+    "августа": 8,
+    "сентября": 9,
+    "октября": 10,
+    "ноября": 11,
+    "декабря": 12
   };
 
-  let matches = text.match(/(\d{1,2}) (января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)\s?(\d{0,4})/i);
+  let matches;
+
+  matches = text.match(/(сегодня|вчера|позавчера|завтра|послезавтра)/i);
+  if (matches) {
+    if (matches[1].toLowerCase() === 'сегодня') {
+      let nowDate = new Date();
+      return new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+    }
+    if (matches[1].toLowerCase() === 'вчера') {
+      let nowDate = new Date();
+      let date = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+      date.setDate(date.getDate() - 1);
+      return date;
+    }
+    if (matches[1].toLowerCase() === 'позавчера') {
+      let nowDate = new Date();
+      let date = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+      date.setDate(date.getDate() - 2);
+      return date;
+    }
+    if (matches[1].toLowerCase() === 'завтра') {
+      let nowDate = new Date();
+      let date = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+      date.setDate(date.getDate() + 1);
+      return date;
+    }
+    if (matches[1].toLowerCase() === 'послезавтра') {
+      let nowDate = new Date();
+      let date = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+      date.setDate(date.getDate() + 2);
+      return date;
+    }
+  }
+
+  matches = text.match(/(\d{1,2})(?:\.|\s)(января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря|\d{2})(?:\s|\.)?(\d{0,4})/i);
   if (matches) {
     let year = new Date().getFullYear();
     if (matches[3])
       year = +matches[3];
-    return new Date(Date.UTC(year, months[matches[2].toLowerCase()], +matches[1]));
-  }
 
-  matches = text.match(/(Сегодня|Вчера)/i);
-  if (matches) {
-    if (matches[1] === 'Сегодня') {
-      let nowDate = new Date();
-      return new Date(Date.UTC(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate()));
-    }
-    if (matches[1] === 'Вчера') {
-      let nowDate = new Date();
-      let date = new Date(Date.UTC(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate()));
-      date.setDate(date.getDate() - 1);
-      return date;
-    }
+    let month;
+    if(matches[2].length == 2)
+      month = +matches[2];
+    else
+      month = months[matches[2].toLowerCase()];
+
+    return new Date(year, month - 1, +matches[1]);
   }
 }
 
