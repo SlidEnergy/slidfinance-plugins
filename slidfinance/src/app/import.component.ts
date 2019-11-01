@@ -1,12 +1,13 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {map, switchMap, tap} from "rxjs/operators";
+import {filter, map, share, switchMap, tap} from "rxjs/operators";
 import {supportedBanks} from "./supported-banks";
 import {AuthService} from "./auth/auth.service";
 import {ChromeApiService} from "./chrome-api";
-import {of, throwError} from "rxjs";
+import {Observable, of, throwError} from "rxjs";
 import {ImportService} from "./import.service";
 import {Bank} from "./bank";
+import {AccountsService, BankAccount} from "./api";
 
 @Component({
   selector: 'app-import',
@@ -18,6 +19,15 @@ export class ImportComponent implements OnInit {
   accountCode: string;
   message: string;
   success = false;
+  accounts: Observable<BankAccount[]>;
+
+  init = this.route.params.pipe(
+    map(params => params['bank']),
+    map(bankName => supportedBanks.find(x => x.name == bankName)),
+    filter(bank => Boolean(bank)),
+    tap(bank => this.bank = bank),
+    share()
+  );
 
   constructor(
     private route: ActivatedRoute,
@@ -25,18 +35,17 @@ export class ImportComponent implements OnInit {
     private chromeApi: ChromeApiService,
     private importService: ImportService,
     private changeDetector: ChangeDetectorRef,
+    private accountsService: AccountsService
   ) {
 
   }
 
   ngOnInit() {
-    this.route.params.pipe(
-      map(params => params['bank']),
-      map(bankName => supportedBanks.find(x => x.name == bankName))
-    ).subscribe(bank => {
-      if (bank)
-        this.bank = bank;
-    });
+    this.init.subscribe();
+
+    this.accounts = this.init.pipe(
+      switchMap(bank => this.accountsService.getList(bank.id))
+    );
   }
 
   import() {
@@ -48,7 +57,7 @@ export class ImportComponent implements OnInit {
         )
       }),
       map(response => {
-        if(response && response.balance != undefined && response.transactions != undefined)
+        if (response && response.balance != undefined && response.transactions != undefined)
           return response;
 
         throwError(response);

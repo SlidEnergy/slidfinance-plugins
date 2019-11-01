@@ -1,26 +1,33 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { ImportComponent } from './import.component';
-import { HomeComponent } from './home.component';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {ImportComponent} from './import.component';
+import {HomeComponent} from './home.component';
 import {ImportService} from "./import.service";
 import {AuthService} from "./auth/auth.service";
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
+import {ApiModule} from "./api";
+import {apiConfigFactory} from "./api-config-factory";
+import { BankAccountsComponent } from './import/bank-accounts/bank-accounts.component';
+import { BankAccountListComponent } from './import/bank-account-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ImportComponent,
-    HomeComponent
+    HomeComponent,
+    BankAccountsComponent,
+    BankAccountListComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    ApiModule.forRoot(apiConfigFactory),
   ],
   providers: [
     ImportService,
@@ -28,4 +35,5 @@ import {FormsModule} from "@angular/forms";
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

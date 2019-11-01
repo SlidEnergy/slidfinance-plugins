@@ -48,14 +48,14 @@ export class AuthService {
   }
 
   private loadAuth(): Observable<TokenInfo> {
-    return of(this.auth);
+    return of(AuthService.auth);
     // return new Observable(subscriber => {
     //   chrome.storage.sync.get(x => subscriber.next(x && x.auth));
     // });
   }
 
   private saveAuth(auth: TokenInfo) {
-    this.auth = auth;
+    AuthService.auth = auth;
     return of(true);
 
     // return new Observable(subscriber => {
@@ -63,5 +63,9 @@ export class AuthService {
     // });
   }
 
-  auth: TokenInfo
+  static getAccessToken() {
+    return AuthService.auth.token;
+  }
+
+  static auth: TokenInfo
 }

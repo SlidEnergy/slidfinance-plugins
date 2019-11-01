@@ -1,4 +1,5 @@
 <div>Обнаружен {{bank.title}}</div>
 <input type="text" [(ngModel)]="accountCode"/>
+<app-bank-account-list [accounts]="accounts"></app-bank-account-list>
 <button (click)="import()">Импортировать</button>
 <div [ngClass]="success ? 'green' : 'red' ">{{message}}</div>
