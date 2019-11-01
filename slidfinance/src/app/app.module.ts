@@ -13,6 +13,7 @@ import {ApiModule} from "./api";
 import {apiConfigFactory} from "./api-config-factory";
 import { BankAccountsComponent } from './import/bank-accounts/bank-accounts.component';
 import { BankAccountListComponent } from './import/bank-account-list.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { BankAccountListComponent } from './import/bank-account-list.component';
     HttpClientModule,
     FormsModule,
     ApiModule.forRoot(apiConfigFactory),
+    NoopAnimationsModule,
   ],
   providers: [
     ImportService,
