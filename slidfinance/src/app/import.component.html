@@ -1,5 +1,5 @@
-<div>Обнаружен {{bank.title}}</div>
-<input type="text" [(ngModel)]="accountCode"/>
-<app-bank-account-list [accounts]="accounts"></app-bank-account-list>
-<button (click)="import()">Импортировать</button>
+<p>Обнаружен {{bank.title}}</p>
+<p>Выберите счет из списка, по которому будут импортированы данные</p>
+<app-bank-account-list [accounts]="accounts" [(selectedItem)]="selectedAccount"></app-bank-account-list>
+<button mat-flat-button color="primary" (click)="import()" [disabled]="!selectedAccount">Импортировать</button>
 <div [ngClass]="success ? 'green' : 'red' ">{{message}}</div>

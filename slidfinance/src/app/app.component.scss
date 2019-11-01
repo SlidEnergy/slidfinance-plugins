@@ -1,0 +1,10 @@
+:host > div {
+  padding-top: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+:host {
+  display: block;
+  min-height: 300px;
+  min-width: 300px;
+}

@@ -10,6 +10,10 @@ export class AuthService {
 
   constructor() { }
 
+  get isLoggedIn(): Observable<boolean> {
+    return this.getAuth().pipe(map(auth => Boolean(auth)));
+  }
+
   getAuth() {
     return this.loadAuth().pipe(
       switchMap(auth => {

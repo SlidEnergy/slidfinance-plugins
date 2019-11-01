@@ -4,7 +4,7 @@ import {filter, map, share, switchMap, tap} from "rxjs/operators";
 import {supportedBanks} from "./supported-banks";
 import {AuthService} from "./auth/auth.service";
 import {ChromeApiService} from "./chrome-api";
-import {Observable, of, throwError} from "rxjs";
+import {of, throwError} from "rxjs";
 import {ImportService} from "./import.service";
 import {Bank} from "./bank";
 import {AccountsService, BankAccount} from "./api";
@@ -16,10 +16,10 @@ import {AccountsService, BankAccount} from "./api";
 })
 export class ImportComponent implements OnInit {
   bank: Bank;
-  accountCode: string;
   message: string;
   success = false;
-  accounts: Observable<BankAccount[]>;
+  accounts: BankAccount[];
+  selectedAccount: BankAccount;
 
   init = this.route.params.pipe(
     map(params => params['bank']),
@@ -41,11 +41,19 @@ export class ImportComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.init.subscribe();
+    //this.init.subscribe();
 
-    this.accounts = this.init.pipe(
-      switchMap(bank => this.accountsService.getList(bank.id))
-    );
+    this.init.pipe(
+      switchMap(bank => {
+        return this.accountsService.getList(bank.id)
+      })
+    ).subscribe(accounts => {
+      if (accounts) {
+        this.accounts = accounts;
+        if (accounts.length > 0)
+          this.selectedAccount = accounts[0];
+      }
+    });
   }
 
   import() {
@@ -62,7 +70,7 @@ export class ImportComponent implements OnInit {
 
         throwError(response);
       }),
-      switchMap(data => this.importService.import(this.accountCode, data))
+      switchMap(data => this.importService.import(this.selectedAccount.code, data))
     )
       .subscribe(
         value => {

@@ -4,6 +4,7 @@ import {Configuration, ConfigurationParameters} from "./api";
 
 export function apiConfigFactory(): Configuration {
   const params: ConfigurationParameters = {
+    apiKeys: {},
     accessToken: () => {
       let token = AuthService.getAccessToken();
 

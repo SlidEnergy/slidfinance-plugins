@@ -11,16 +11,17 @@ import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
 import {ApiModule} from "./api";
 import {apiConfigFactory} from "./api-config-factory";
-import { BankAccountsComponent } from './import/bank-accounts/bank-accounts.component';
 import { BankAccountListComponent } from './import/bank-account-list.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import {MatListModule} from "@angular/material/list";
+import {AuthGuard} from "./auth/auth-guard.service";
+import {MatButtonModule} from "@angular/material/button";
 
 @NgModule({
   declarations: [
     AppComponent,
     ImportComponent,
     HomeComponent,
-    BankAccountsComponent,
     BankAccountListComponent
   ],
   imports: [
@@ -30,10 +31,14 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
     FormsModule,
     ApiModule.forRoot(apiConfigFactory),
     NoopAnimationsModule,
+
+    MatListModule,
+    MatButtonModule
   ],
   providers: [
     ImportService,
-    AuthService
+    AuthService,
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })
