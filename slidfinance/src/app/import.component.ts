@@ -65,7 +65,7 @@ export class ImportComponent implements OnInit {
         )
       }),
       map(response => {
-        if (response && response.balance != undefined && response.transactions != undefined)
+        if (response && response.balance !== undefined && response.transactions !== undefined)
           return response;
 
         throwError(response);

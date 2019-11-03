@@ -45,7 +45,7 @@ export let supportedBanks = [
     "id": 6,
     "name": "sberbank",
     "file": "sberbank.js",
-    "url": "https://online.sberbank.ru/",
+    "url": "https://node1.online.sberbank.ru/",
     "title": "Сбербанк"
   },
   {
