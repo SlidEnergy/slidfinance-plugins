@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng build --watch --configuration=dev",
     "build": "ng build",
+    "zip": "zip slidfinance.zip dist",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
