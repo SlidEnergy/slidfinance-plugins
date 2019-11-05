@@ -1,0 +1,3 @@
+<mat-selection-list role="listbox"[(ngModel)]="selectedOptions" (selectionChange)="list_selectionChange($event)">
+  <mat-list-option  *ngFor="let bankAccount of accounts" role="option" [value]="bankAccount">{{bankAccount.title}}</mat-list-option >
+</mat-selection-list>

@@ -1,0 +1,20 @@
+.green {
+  color: green;
+  font-weight: 600;
+}
+
+.red {
+  color: red;
+  font-weight: 600;
+}
+
+:host {
+  display: block;
+  padding: 1rem;
+}
+
+button {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  float: right;
+}

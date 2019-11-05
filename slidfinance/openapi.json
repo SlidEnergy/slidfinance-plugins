@@ -1,0 +1,9 @@
+{
+  "sortParamsByRequiredFlag": true,
+  "ensureUniqueParams": true,
+  "allowUnicodeIdentifiers": false,
+  "modelPropertyNaming": "original",
+  "supportsES6": true,
+  "withInterfaces": false,
+  "ngVersion": "8.1.1"
+}
