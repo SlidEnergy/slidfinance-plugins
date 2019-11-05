@@ -75,6 +75,15 @@ describe('parse date', () => {
     expect(+date).toEqual(Date.parse("2019-09-25T00:00:00"));
   });
 
+  it('should be parsed 25/9', () => {
+    let date = parseDate("25 сент\n09:30");
+    expect(+date).toEqual(Date.parse("2019-09-25T00:00:00"));
+  });
+  it('should be parsed 2/11', () => {
+    let date = parseDate("2 ноя\n10:30");
+    expect(+date).toEqual(Date.parse("2019-11-02T00:00:00"));
+  });
+
   it('should be parsed сегодня', () => {
     let date = parseDate("сегодня");
     expect(+date).toEqual(+today);
