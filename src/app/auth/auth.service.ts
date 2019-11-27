@@ -32,7 +32,7 @@ export class AuthService {
 
       chrome.tabs.create({
         active: false,
-        url: 'https://myfinance-frontend.herokuapp.com'
+        url: 'https://slidfinance-frontend.herokuapp.com'
       }, function (tab) {
         chrome.tabs.executeScript(tab.id, {
           code: 'localStorage.getItem("auth");'

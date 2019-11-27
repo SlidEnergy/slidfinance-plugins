@@ -7,7 +7,7 @@ import {AuthService} from "./auth/auth.service";
   providedIn: 'root'
 })
 export class ImportService {
-  url = 'https://myfinance-server.herokuapp.com/api/v1/import';
+  url = 'https://slidfinance-server.herokuapp.com/api/v1/import';
 
   constructor(private http: HttpClient,
               private authService: AuthService

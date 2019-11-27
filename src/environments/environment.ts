@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseApiUrl: "https://myfinance-server.herokuapp.com"
+  baseApiUrl: "https://slidfinance-server.herokuapp.com"
 };
 
 /*

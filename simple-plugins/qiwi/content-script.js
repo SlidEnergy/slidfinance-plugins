@@ -63,7 +63,7 @@ async function getTokenOrAuthorize() {
 function getCurrentUser(token) {
     return new Promise((resolve, reject) => {
         var req = new XMLHttpRequest();
-        req.open('GET', 'https://myfinance-server.herokuapp.com/api/v1/users/current', true);
+        req.open('GET', 'https://slidfinance-server.herokuapp.com/api/v1/users/current', true);
         req.setRequestHeader("Content-Type", "application/json");
         req.setRequestHeader("Authorization", "Bearer " + token);
         req.onreadystatechange = function () {
@@ -90,7 +90,7 @@ async function login() {
         }
 
         var req = new XMLHttpRequest();
-        req.open('POST', 'https://myfinance-server.herokuapp.com/api/v1/users/token', true);
+        req.open('POST', 'https://slidfinance-server.herokuapp.com/api/v1/users/token', true);
         req.setRequestHeader("Content-Type", "application/json");
         req.onreadystatechange = function () {
             if (req.readyState == 4) {
@@ -240,7 +240,7 @@ function parseTransactions() {
 
 function sendTransactions(token, data) {
     var req = new XMLHttpRequest();
-    req.open('POST', 'https://myfinance-server.herokuapp.com/api/v1/import', true);
+    req.open('POST', 'https://slidfinance-server.herokuapp.com/api/v1/import', true);
     req.setRequestHeader("Content-Type", "application/json");
     req.setRequestHeader("Authorization", "Bearer " + token);
     req.onreadystatechange = function () {
