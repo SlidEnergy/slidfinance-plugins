@@ -42,7 +42,9 @@ function parseTransactions() {
     if (mccElement) {
       let mccText = pipe(mccElement, setBorder, innerText);
       if (mccText) {
-        mcc = parseInt(mccText.match(/МСС: (\d{4})/)[1]);
+        let matches = mccText.match(/МСС: (\d{4})/);
+        if(matches && matches.length > 1)
+        mcc = parseInt(matches[1]);
       }
     }
 
