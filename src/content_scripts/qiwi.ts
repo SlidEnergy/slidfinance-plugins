@@ -26,9 +26,9 @@ function parseBalance() {
 function parseTransactions() {
   let dateTime;
   let transactions = [];
-  let records = document.querySelectorAll("div[class^='content-column-self'] div[class^='history-block-date'], div[class^='content-column-self'] div[class*='history-item-self'][class*='history-item-success']");
+  let records = document.querySelectorAll("div[class^='content-column-self'] div[class^='dated-block-date'], div[class^='content-column-self'] div[class*='history-item-self'][class*='history-item-success']");
   for (let record of Array.from(records)) {
-    let dateElement = record.querySelector("span[class^='history-block-date-value']");
+    let dateElement = record.querySelector("span[class^='dated-block-date-value']");
     if (dateElement) {
       dateTime = pipe(dateElement, setBorder, firstChildText, parseDate);
       continue;
