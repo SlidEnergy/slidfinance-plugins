@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {filter, map, switchMap, tap} from "rxjs/operators";
+import {filter, switchMapTo, tap} from "rxjs/operators";
 import {ChromeApiService} from "./chrome-api";
 import {NavigatorService} from "./navigator.service";
 import {BankDetectorService} from "./bank-detector.service";
+import {AuthService} from "./auth/auth.service";
 
 @Component({
   selector: 'app-root',
@@ -16,19 +17,20 @@ export class AppComponent implements OnInit {
   constructor(
     private chromeApi: ChromeApiService,
     private navigator: NavigatorService,
-    private bankDetector: BankDetectorService
+    private bankDetector: BankDetectorService,
+    private authService: AuthService
   ) {
   }
 
   ngOnInit() {
-    this.chromeApi.getSyncStorage().pipe(
-      map(data => data.token),
+    this.authService.hasRefreshToken().pipe(
       tap(token => {
         if(!token)
           this.navigator.navigate(['token'])
       }),
       filter(token => token),
-      switchMap(token => this.bankDetector.detectAndNavigate()),
+      switchMapTo(this.authService.initAccessToken()),
+      switchMapTo(this.bankDetector.detectAndNavigate()),
     ).subscribe();
   }
 }

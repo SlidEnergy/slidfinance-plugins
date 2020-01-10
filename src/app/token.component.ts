@@ -2,7 +2,7 @@ import {Component, NgZone, OnInit} from '@angular/core';
 import {ChromeApiService} from "./chrome-api";
 import {Router} from "@angular/router";
 import {BankDetectorService} from "./bank-detector.service";
-import {switchMapTo} from "rxjs/operators";
+import {switchMap, switchMapTo} from "rxjs/operators";
 import {AuthService} from "./auth/auth.service";
 
 @Component({
@@ -26,7 +26,8 @@ export class TokenComponent implements OnInit {
   button_Click() {
     if (this.token) {
       this.authService.saveRefreshToken(this.token).pipe(
-        switchMapTo(this.bankDetector.detectAndNavigate())
+        switchMapTo(this.authService.initAccessToken()),
+        switchMapTo(this.bankDetector.detectAndNavigate()),
       ).subscribe();
     }
   }

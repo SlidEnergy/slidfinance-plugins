@@ -17,12 +17,10 @@ export class ImportService {
   import(accountCode: string, data: any[]) {
     let headers = new HttpHeaders();
 
-    return this.authService.getToken().pipe(
-      switchMap(token => {
-        headers = headers.set('Authorization', 'Bearer ' + token);
-        headers = headers.set("Content-Type", "application/json");
+    const token = AuthService.getAccessToken();
+    headers = headers.set('Authorization', 'Bearer ' + token);
+    headers = headers.set("Content-Type", "application/json");
 
-        return this.http.post(this.url, {...data, code: accountCode}, {headers: headers});
-      }));
+    return this.http.post(this.url, {...data, code: accountCode}, {headers: headers});
   }
 }
