@@ -123,8 +123,7 @@ export class ImportComponent implements OnInit {
 
   exportCommand(tabId) {
     console.log('export command...');
-    return this.authService.getAuth().pipe(
-      map(auth => auth.token),
+    return this.authService.getToken().pipe(
       switchMap(token => {
         if (!token) {
           alert("Error: Token is " + token);

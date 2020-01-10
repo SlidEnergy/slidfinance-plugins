@@ -11,6 +11,14 @@ export class ChromeApiService {
     return new Observable(subscriber => chrome.tabs.query({active: true, currentWindow: true}, tabs => subscriber.next(tabs[0])));
   }
 
+  getSyncStorage(): Observable<any> {
+    return new Observable(subscriber => chrome.storage.sync.get(data => subscriber.next(data)));
+  }
+
+  setSyncStorage(data): Observable<any> {
+    return new Observable(subscriber => chrome.storage.sync.set(data, () => subscriber.next(true)));
+  }
+
   sendMessage(tabId: number, message: string): Observable<any> {
     return new Observable( subscriber =>
       chrome.tabs.sendMessage(tabId, message, response => subscriber.next(response)));
