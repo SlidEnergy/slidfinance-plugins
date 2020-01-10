@@ -179,21 +179,26 @@ export class TransactionsService {
     /**
      * 
      * 
+     * @param accountId 
      * @param categoryId 
      * @param startDate 
      * @param endDate 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getList(categoryId?: number, startDate?: Date, endDate?: Date, observe?: 'body', reportProgress?: boolean): Observable<Array<Transaction>>;
-    public getList(categoryId?: number, startDate?: Date, endDate?: Date, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<Transaction>>>;
-    public getList(categoryId?: number, startDate?: Date, endDate?: Date, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<Transaction>>>;
-    public getList(categoryId?: number, startDate?: Date, endDate?: Date, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public getList(accountId?: number, categoryId?: number, startDate?: Date, endDate?: Date, observe?: 'body', reportProgress?: boolean): Observable<Array<Transaction>>;
+    public getList(accountId?: number, categoryId?: number, startDate?: Date, endDate?: Date, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<Transaction>>>;
+    public getList(accountId?: number, categoryId?: number, startDate?: Date, endDate?: Date, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<Transaction>>>;
+    public getList(accountId?: number, categoryId?: number, startDate?: Date, endDate?: Date, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
 
 
 
 
         let queryParameters = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
+        if (accountId !== undefined && accountId !== null) {
+            queryParameters = queryParameters.set('accountId', <any>accountId);
+        }
         if (categoryId !== undefined && categoryId !== null) {
             queryParameters = queryParameters.set('categoryId', <any>categoryId);
         }

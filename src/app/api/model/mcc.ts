@@ -20,4 +20,5 @@ export interface Mcc {
     description?: string;
     ruDescription?: string;
     category?: MccCategory;
+    isSystem?: boolean;
 }

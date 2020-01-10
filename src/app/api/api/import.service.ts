@@ -20,6 +20,7 @@ import { Observable }                                        from 'rxjs';
 
 import { PatchAccountDataBindingModel } from '../model/patchAccountDataBindingModel';
 import { ProblemDetails } from '../model/problemDetails';
+import { TokenInfo } from '../model/tokenInfo';
 import { TokensCortage } from '../model/tokensCortage';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -126,10 +127,10 @@ export class ImportService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getToken(observe?: 'body', reportProgress?: boolean): Observable<TokensCortage>;
-    public getToken(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<TokensCortage>>;
-    public getToken(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<TokensCortage>>;
-    public getToken(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public getRefreshToken(observe?: 'body', reportProgress?: boolean): Observable<string>;
+    public getRefreshToken(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<string>>;
+    public getRefreshToken(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<string>>;
+    public getRefreshToken(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -161,8 +162,57 @@ export class ImportService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.post<TokensCortage>(`${this.basePath}/api/v1/Import/token`,
+        return this.httpClient.post<string>(`${this.basePath}/api/v1/Import/refreshToken`,
             null,
+            {
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * 
+     * 
+     * @param tokens 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public refresh(tokens?: TokensCortage, observe?: 'body', reportProgress?: boolean): Observable<TokenInfo>;
+    public refresh(tokens?: TokensCortage, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<TokenInfo>>;
+    public refresh(tokens?: TokensCortage, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<TokenInfo>>;
+    public refresh(tokens?: TokensCortage, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+
+        let headers = this.defaultHeaders;
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            'text/plain',
+            'application/json',
+            'text/json'
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json-patch+json',
+            'application/json',
+            'text/json',
+            'application/_*+json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        return this.httpClient.post<TokenInfo>(`${this.basePath}/api/v1/Import/token`,
+            tokens,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,

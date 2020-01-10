@@ -3,6 +3,7 @@ import {ChromeApiService} from "./chrome-api";
 import {Router} from "@angular/router";
 import {BankDetectorService} from "./bank-detector.service";
 import {switchMapTo} from "rxjs/operators";
+import {AuthService} from "./auth/auth.service";
 
 @Component({
   selector: 'app-token',
@@ -15,16 +16,16 @@ export class TokenComponent implements OnInit {
   constructor(private chromeApi: ChromeApiService,
               private ngZone: NgZone,
               private router: Router,
-              private bankDetector: BankDetectorService) {
+              private bankDetector: BankDetectorService,
+              private authService: AuthService) {
   }
 
   ngOnInit() {
   }
 
   button_Click() {
-    console.log(this.token);
     if (this.token) {
-      this.chromeApi.setSyncStorage({token: this.token}).pipe(
+      this.authService.saveRefreshToken(this.token).pipe(
         switchMapTo(this.bankDetector.detectAndNavigate())
       ).subscribe();
     }

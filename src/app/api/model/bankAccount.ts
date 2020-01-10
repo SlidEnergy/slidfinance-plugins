@@ -9,6 +9,7 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
+import { ProductType } from './productType';
 
 
 export interface BankAccount { 
@@ -18,4 +19,7 @@ export interface BankAccount {
     creditLimit?: number;
     title?: string;
     bankId?: number;
+    selectedTariffId?: number;
+    productId?: number;
+    type?: ProductType;
 }
