@@ -39,4 +39,9 @@ export class ChromeApiService {
         innerCallback(undefined);   // execute outermost function
     });
   }
+
+  createTab(createProperties: chrome.tabs.CreateProperties): Observable<chrome.tabs.Tab> {
+      return new Observable(subscriber =>
+        chrome.tabs.create(createProperties, response => subscriber.next(response)));
+  }
 }

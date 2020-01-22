@@ -18,6 +18,7 @@ import {AuthGuard} from "./auth/auth-guard.service";
 import {MatButtonModule} from "@angular/material/button";
 import { TokenComponent } from './token.component';
 import {MatInputModule} from "@angular/material/input";
+import {BankListComponent} from "./bank-list.component";
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import {MatInputModule} from "@angular/material/input";
     ImportComponent,
     HomeComponent,
     BankAccountListComponent,
-    TokenComponent
+    TokenComponent,
+    BankListComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +39,7 @@ import {MatInputModule} from "@angular/material/input";
 
     MatListModule,
     MatButtonModule,
-    MatInputModule
+    MatInputModule,
   ],
   providers: [
     ImportService,

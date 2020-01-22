@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {supportedBanks} from "./supported-banks";
 
 @Component({
   selector: 'app-home',
@@ -6,8 +7,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+  banks = supportedBanks;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }
