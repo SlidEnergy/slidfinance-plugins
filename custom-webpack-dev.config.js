@@ -18,6 +18,7 @@ module.exports = {...config,
       "content_scripts/tinkoff": 'src/content_scripts/tinkoff.ts',
       "content_scripts/vostbank": 'src/content_scripts/tinkoff.ts',
       "content_scripts/yandex": 'src/content_scripts/tinkoff.ts',
+      "content_scripts/megafon": 'src/content_scripts/megafon.ts',
     }
   })]
 }

@@ -76,4 +76,11 @@ export let supportedBanks = [
     "url": "https://money.yandex.ru/",
     "title": "Яндекс"
   },
+  {
+    "id": 38,
+    "name": "megafon",
+    "file": "megafon.js",
+    "url": "https://bank.megafon.ru/",
+    "title": "Мегафон банк"
+  },
 ];
