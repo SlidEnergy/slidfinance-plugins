@@ -12,7 +12,7 @@ function exportCommandHandler(): { balance: number, transactions: any[] } | unde
 }
 
 function parseBalance() {
-  return pipe(document.querySelector(".wocb-product-item-header_card .wocb-product-item-header__amount, .wocb-select-product-item_card .wocb-select-product-item__amount"), setBorder, innerText, parseAmount);
+  return pipe(document.querySelector(".wocb-product-item-header_card .wocb-product-item-header__amount, .wb-select-product-item_card .wb-select-product-item__amount"), setBorder, innerText, parseAmount);
 }
 
 function parseTransactions() {
