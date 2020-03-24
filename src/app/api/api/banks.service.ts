@@ -18,9 +18,7 @@ import { CustomHttpUrlEncodingCodec }                        from '../encoder';
 
 import { Observable }                                        from 'rxjs';
 
-import { AddBankBindingModel } from '../model/addBankBindingModel';
 import { Bank } from '../model/bank';
-import { EditBankBindingModel } from '../model/editBankBindingModel';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -118,10 +116,10 @@ export class BanksService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public add(bank?: AddBankBindingModel, observe?: 'body', reportProgress?: boolean): Observable<Bank>;
-    public add(bank?: AddBankBindingModel, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Bank>>;
-    public add(bank?: AddBankBindingModel, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Bank>>;
-    public add(bank?: AddBankBindingModel, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public add(bank?: Bank, observe?: 'body', reportProgress?: boolean): Observable<Bank>;
+    public add(bank?: Bank, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Bank>>;
+    public add(bank?: Bank, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Bank>>;
+    public add(bank?: Bank, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
 
         let headers = this.defaultHeaders;
@@ -232,10 +230,10 @@ export class BanksService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public update(id: number, bank?: EditBankBindingModel, observe?: 'body', reportProgress?: boolean): Observable<Bank>;
-    public update(id: number, bank?: EditBankBindingModel, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Bank>>;
-    public update(id: number, bank?: EditBankBindingModel, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Bank>>;
-    public update(id: number, bank?: EditBankBindingModel, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public update(id: number, bank?: Bank, observe?: 'body', reportProgress?: boolean): Observable<Bank>;
+    public update(id: number, bank?: Bank, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Bank>>;
+    public update(id: number, bank?: Bank, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Bank>>;
+    public update(id: number, bank?: Bank, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling update.');

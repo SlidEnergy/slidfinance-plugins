@@ -24,7 +24,7 @@ export let supportedBanks = [
     "id": 35,
     "name": "otpbank",
     "file": "otpbank.js",
-    "url": "https://direkt.otpbank.ru/",
+    "url": "https://online.otpbank.ru/",
     "title": "Банк ОТП"
   },
   {
@@ -75,5 +75,12 @@ export let supportedBanks = [
     "file": "yandex.js",
     "url": "https://money.yandex.ru/",
     "title": "Яндекс"
+  },
+  {
+    "id": 38,
+    "name": "megafon",
+    "file": "megafon.js",
+    "url": "https://bank.megafon.ru/",
+    "title": "Мегафон банк"
   },
 ];

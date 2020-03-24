@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {map, switchMap} from "rxjs/operators";
+import {switchMap} from "rxjs/operators";
 import {AuthService} from "./auth/auth.service";
 
 @Injectable({
@@ -17,14 +17,10 @@ export class ImportService {
   import(accountCode: string, data: any[]) {
     let headers = new HttpHeaders();
 
-    return this.authService.getAuth().pipe(
-      map(auth => auth && auth.token),
-      switchMap(token => {
+    const token = AuthService.getAccessToken();
+    headers = headers.set('Authorization', 'Bearer ' + token);
+    headers = headers.set("Content-Type", "application/json");
 
-        headers = headers.set('Authorization', 'Bearer ' + token);
-        headers = headers.set("Content-Type", "application/json");
-
-        return this.http.post(this.url, {...data, code: accountCode}, {headers: headers});
-      }));
+    return this.http.post(this.url, {...data, code: accountCode}, {headers: headers});
   }
 }

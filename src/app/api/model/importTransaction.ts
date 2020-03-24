@@ -9,17 +9,12 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { ProductType } from './productType';
 
 
-export interface BankAccount { 
-    id?: number;
-    code?: string;
-    balance?: number;
-    creditLimit?: number;
-    title?: string;
-    bankId?: number;
-    selectedTariffId?: number;
-    productId?: number;
-    type?: ProductType;
+export interface ImportTransaction { 
+    dateTime?: Date;
+    amount?: number;
+    description?: string;
+    mcc?: number;
+    category?: string;
 }

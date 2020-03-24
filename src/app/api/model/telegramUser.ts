@@ -9,17 +9,13 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { ProductType } from './productType';
 
 
-export interface BankAccount { 
+export interface TelegramUser { 
     id?: number;
-    code?: string;
-    balance?: number;
-    creditLimit?: number;
-    title?: string;
-    bankId?: number;
-    selectedTariffId?: number;
-    productId?: number;
-    type?: ProductType;
+    username?: string;
+    first_name?: string;
+    last_name?: string;
+    auth_date?: number;
+    hash?: string;
 }

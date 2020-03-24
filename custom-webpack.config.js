@@ -14,6 +14,7 @@ module.exports = {
     "content_scripts/tinkoff": 'src/content_scripts/tinkoff.ts',
     "content_scripts/vostbank": 'src/content_scripts/vostbank.ts',
     "content_scripts/yandex": 'src/content_scripts/yandex.ts',
+    "content_scripts/megafon": 'src/content_scripts/megafon.ts',
   },
   optimization: {
     splitChunks: {

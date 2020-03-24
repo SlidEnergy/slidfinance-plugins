@@ -16,13 +16,18 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {MatListModule} from "@angular/material/list";
 import {AuthGuard} from "./auth/auth-guard.service";
 import {MatButtonModule} from "@angular/material/button";
+import { TokenComponent } from './token.component';
+import {MatInputModule} from "@angular/material/input";
+import {BankListComponent} from "./bank-list.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     ImportComponent,
     HomeComponent,
-    BankAccountListComponent
+    BankAccountListComponent,
+    TokenComponent,
+    BankListComponent
   ],
   imports: [
     BrowserModule,
@@ -33,7 +38,8 @@ import {MatButtonModule} from "@angular/material/button";
     NoopAnimationsModule,
 
     MatListModule,
-    MatButtonModule
+    MatButtonModule,
+    MatInputModule,
   ],
   providers: [
     ImportService,

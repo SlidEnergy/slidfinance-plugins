@@ -18,6 +18,7 @@ export interface Transaction {
     amount?: number;
     categoryId?: number;
     description?: string;
+    userDescription?: string;
     mcc?: number;
     bankCategory?: string;
     approved?: boolean;

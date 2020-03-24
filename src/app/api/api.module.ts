@@ -8,8 +8,11 @@ import { BanksService } from './api/banks.service';
 import { CategoriesService } from './api/categories.service';
 import { ImportService } from './api/import.service';
 import { MccService } from './api/mcc.service';
+import { MerchantsService } from './api/merchants.service';
+import { ProductsService } from './api/products.service';
 import { RulesService } from './api/rules.service';
 import { StatisticsService } from './api/statistics.service';
+import { TelegramService } from './api/telegram.service';
 import { TokenService } from './api/token.service';
 import { TransactionsService } from './api/transactions.service';
 import { UsersService } from './api/users.service';
@@ -24,8 +27,11 @@ import { UsersService } from './api/users.service';
     CategoriesService,
     ImportService,
     MccService,
+    MerchantsService,
+    ProductsService,
     RulesService,
     StatisticsService,
+    TelegramService,
     TokenService,
     TransactionsService,
     UsersService ]

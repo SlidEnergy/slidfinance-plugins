@@ -9,11 +9,11 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { Transaction } from './transaction';
+import { ImportTransaction } from './importTransaction';
 
 
 export interface PatchAccountDataBindingModel { 
     code?: string;
     balance?: number;
-    transactions?: Array<Transaction>;
+    transactions?: Array<ImportTransaction>;
 }

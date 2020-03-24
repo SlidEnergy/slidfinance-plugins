@@ -123,18 +123,15 @@ export class ImportComponent implements OnInit {
 
   exportCommand(tabId) {
     console.log('export command...');
-    return this.authService.getAuth().pipe(
-      map(auth => auth.token),
-      switchMap(token => {
-        if (!token) {
-          alert("Error: Token is " + token);
-          return;
-        }
+    const token = AuthService.getAccessToken();
+    if (!token) {
+      alert("Error: Token is " + token);
+      return;
+    }
 
-        console.log('export...');
-        return this.chromeApi.sendMessage(tabId, "export").pipe(tap(response => {
-          console.log('got response');
-        }));
-      }));
+    console.log('export...');
+    return this.chromeApi.sendMessage(tabId, "export").pipe(tap(response => {
+      console.log('got response');
+    }));
   }
 }

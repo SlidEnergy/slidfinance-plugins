@@ -20,14 +20,14 @@ import { Observable }                                        from 'rxjs';
 
 import { Operation } from '../model/operation';
 import { ProblemDetails } from '../model/problemDetails';
-import { Transaction } from '../model/transaction';
+import { Product } from '../model/product';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 
 
 @Injectable()
-export class TransactionsService {
+export class ProductsService {
 
     protected basePath = 'https://localhost';
     public defaultHeaders = new HttpHeaders();
@@ -65,9 +65,9 @@ export class TransactionsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public _delete(id: number, observe?: 'body', reportProgress?: boolean): Observable<Transaction>;
-    public _delete(id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Transaction>>;
-    public _delete(id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Transaction>>;
+    public _delete(id: number, observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public _delete(id: number, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public _delete(id: number, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
     public _delete(id: number, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (id === null || id === undefined) {
@@ -91,9 +91,6 @@ export class TransactionsService {
 
         // to determine the Accept header
         let httpHeaderAccepts: string[] = [
-            'text/plain',
-            'application/json',
-            'text/json'
         ];
         const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         if (httpHeaderAcceptSelected != undefined) {
@@ -104,7 +101,7 @@ export class TransactionsService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.delete<Transaction>(`${this.basePath}/api/v1/Transactions/${encodeURIComponent(String(id))}`,
+        return this.httpClient.delete<any>(`${this.basePath}/api/v1/Products/${encodeURIComponent(String(id))}`,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -117,14 +114,14 @@ export class TransactionsService {
     /**
      * 
      * 
-     * @param transaction 
+     * @param product 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public add(transaction?: Transaction, observe?: 'body', reportProgress?: boolean): Observable<Transaction>;
-    public add(transaction?: Transaction, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Transaction>>;
-    public add(transaction?: Transaction, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Transaction>>;
-    public add(transaction?: Transaction, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public add(product?: Product, observe?: 'body', reportProgress?: boolean): Observable<Product>;
+    public add(product?: Product, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Product>>;
+    public add(product?: Product, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Product>>;
+    public add(product?: Product, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
 
         let headers = this.defaultHeaders;
@@ -165,8 +162,8 @@ export class TransactionsService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.post<Transaction>(`${this.basePath}/api/v1/Transactions`,
-            transaction,
+        return this.httpClient.post<Product>(`${this.basePath}/api/v1/Products`,
+            product,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -179,35 +176,13 @@ export class TransactionsService {
     /**
      * 
      * 
-     * @param accountId 
-     * @param categoryId 
-     * @param startDate 
-     * @param endDate 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getList(accountId?: number, categoryId?: number, startDate?: Date, endDate?: Date, observe?: 'body', reportProgress?: boolean): Observable<Array<Transaction>>;
-    public getList(accountId?: number, categoryId?: number, startDate?: Date, endDate?: Date, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<Transaction>>>;
-    public getList(accountId?: number, categoryId?: number, startDate?: Date, endDate?: Date, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<Transaction>>>;
-    public getList(accountId?: number, categoryId?: number, startDate?: Date, endDate?: Date, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
-
-
-
-
-
-        let queryParameters = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
-        if (accountId !== undefined && accountId !== null) {
-            queryParameters = queryParameters.set('accountId', <any>accountId);
-        }
-        if (categoryId !== undefined && categoryId !== null) {
-            queryParameters = queryParameters.set('categoryId', <any>categoryId);
-        }
-        if (startDate !== undefined && startDate !== null) {
-            queryParameters = queryParameters.set('startDate', <any>startDate.toISOString());
-        }
-        if (endDate !== undefined && endDate !== null) {
-            queryParameters = queryParameters.set('endDate', <any>endDate.toISOString());
-        }
+    public getList(observe?: 'body', reportProgress?: boolean): Observable<Array<Product>>;
+    public getList(observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Array<Product>>>;
+    public getList(observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Array<Product>>>;
+    public getList(observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -239,9 +214,8 @@ export class TransactionsService {
         const consumes: string[] = [
         ];
 
-        return this.httpClient.get<Array<Transaction>>(`${this.basePath}/api/v1/Transactions`,
+        return this.httpClient.get<Array<Product>>(`${this.basePath}/api/v1/Products`,
             {
-                params: queryParameters,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
                 observe: observe,
@@ -258,13 +232,13 @@ export class TransactionsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public patch(id: number, patchDoc?: Array<Operation>, observe?: 'body', reportProgress?: boolean): Observable<any>;
-    public patch(id: number, patchDoc?: Array<Operation>, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
-    public patch(id: number, patchDoc?: Array<Operation>, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
-    public patch(id: number, patchDoc?: Array<Operation>, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+    public patchProduct(id: number, patchDoc?: Array<Operation>, observe?: 'body', reportProgress?: boolean): Observable<any>;
+    public patchProduct(id: number, patchDoc?: Array<Operation>, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<any>>;
+    public patchProduct(id: number, patchDoc?: Array<Operation>, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<any>>;
+    public patchProduct(id: number, patchDoc?: Array<Operation>, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
 
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling patch.');
+            throw new Error('Required parameter id was null or undefined when calling patchProduct.');
         }
 
 
@@ -306,8 +280,75 @@ export class TransactionsService {
             headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
-        return this.httpClient.patch<any>(`${this.basePath}/api/v1/Transactions/${encodeURIComponent(String(id))}`,
+        return this.httpClient.patch<any>(`${this.basePath}/api/v1/Products/${encodeURIComponent(String(id))}`,
             patchDoc,
+            {
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * 
+     * 
+     * @param id 
+     * @param product 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public update(id: number, product?: Product, observe?: 'body', reportProgress?: boolean): Observable<Product>;
+    public update(id: number, product?: Product, observe?: 'response', reportProgress?: boolean): Observable<HttpResponse<Product>>;
+    public update(id: number, product?: Product, observe?: 'events', reportProgress?: boolean): Observable<HttpEvent<Product>>;
+    public update(id: number, product?: Product, observe: any = 'body', reportProgress: boolean = false ): Observable<any> {
+
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling update.');
+        }
+
+
+        let headers = this.defaultHeaders;
+
+        // authentication (Bearer) required
+        if (this.configuration.apiKeys["Authorization"]) {
+            headers = headers.set('Authorization', this.configuration.apiKeys["Authorization"]);
+        }
+
+        // authentication (Oauth2) required
+        if (this.configuration.accessToken) {
+            const accessToken = typeof this.configuration.accessToken === 'function'
+                ? this.configuration.accessToken()
+                : this.configuration.accessToken;
+            headers = headers.set('Authorization', 'Bearer ' + accessToken);
+        }
+
+        // to determine the Accept header
+        let httpHeaderAccepts: string[] = [
+            'text/plain',
+            'application/json',
+            'text/json'
+        ];
+        const httpHeaderAcceptSelected: string | undefined = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        if (httpHeaderAcceptSelected != undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json-patch+json',
+            'application/json',
+            'text/json',
+            'application/_*+json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected != undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        return this.httpClient.put<Product>(`${this.basePath}/api/v1/Products/${encodeURIComponent(String(id))}`,
+            product,
             {
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,

@@ -1,75 +1,65 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable, of} from "rxjs";
-import {TokenInfo} from "./token-info";
-import {map, switchMap} from "rxjs/operators";
+import {filter, map, switchMap, tap} from "rxjs/operators";
+import {ChromeApiService} from "../chrome-api";
+import {ImportService, TokensCortage} from "../api";
+import {NavigatorService} from "../navigator.service";
+import local = chrome.storage.local;
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor() { }
+  constructor(private chromeApi: ChromeApiService,
+              private importService: ImportService,
+              private navigator: NavigatorService) {
+  }
+
+  initAccessToken() {
+    return this.chromeApi.getSyncStorage().pipe(
+      switchMap(data => {
+        const accessToken = AuthService.getAccessToken();
+        if (accessToken)
+          return of(accessToken);
+
+        console.log('refresh token...');
+        console.log(data.refreshToken);
+        return this.refreshToken(data.refreshToken);
+      }),
+      tap(accessToken => localStorage.setItem('accessToken', accessToken))
+    );
+  }
+
+  hasRefreshToken() {
+    return this.chromeApi.getSyncStorage().pipe(
+      map(data => data && data.refreshToken)
+    );
+  }
 
   get isLoggedIn(): Observable<boolean> {
-    return this.getAuth().pipe(map(auth => Boolean(auth)));
-  }
-
-  getAuth() {
-    return this.loadAuth().pipe(
-      switchMap(auth => {
-        if (auth && auth.token && auth.refreshToken && auth.email)
-          return of(auth);
-        else
-          return this.getSlidFinanceAuthData().pipe(switchMap(auth => this.saveAuth(auth).pipe(map(x => auth))));
-      }));
-  }
-
-  private getSlidFinanceAuthData(): Observable<any> {
-    return new Observable(subscriber => {
-      console.log("Getting auth data...");
-
-      // Открываем вкладку в новом окне и выполняем скрипт в созданной вкладке.
-
-      chrome.tabs.create({
-        active: false,
-        url: 'https://slidfinance-frontend.herokuapp.com'
-      }, function (tab) {
-        chrome.tabs.executeScript(tab.id, {
-          code: 'localStorage.getItem("auth");'
-        }, function (result: any) {
-          chrome.tabs.remove(tab.id);
-
-          let auth = undefined;
-          try {
-            auth = result && JSON.parse(result);
-          } catch (e) {
-          }
-
-          subscriber.next(auth);
-        });
-      });
-    });
-  }
-
-  private loadAuth(): Observable<TokenInfo> {
-    return of(AuthService.auth);
-    // return new Observable(subscriber => {
-    //   chrome.storage.sync.get(x => subscriber.next(x && x.auth));
-    // });
-  }
-
-  private saveAuth(auth: TokenInfo) {
-    AuthService.auth = auth;
-    return of(true);
-
-    // return new Observable(subscriber => {
-    //   chrome.storage.sync.set({auth}, () => subscriber.next(true));
-    // });
+    return of(AuthService.getAccessToken()).pipe(
+      map(token => Boolean(token))
+    );
   }
 
   static getAccessToken() {
-    return AuthService.auth.token;
+    return localStorage.getItem('accessToken');
   }
 
-  static auth: TokenInfo
+  saveRefreshToken(token: string) {
+    return this.chromeApi.setSyncStorage({refreshToken: token});
+  }
+
+  private refreshToken(token: string): Observable<string> {
+    if (!token)
+      return of(undefined);
+
+    return this.importService.refresh({refreshToken: token}).pipe(
+      switchMap(tokens => this.chromeApi.setSyncStorage({
+            refreshToken: tokens.refreshToken
+          }).pipe(map(result => tokens.token))
+      ),
+    );
+  }
 }

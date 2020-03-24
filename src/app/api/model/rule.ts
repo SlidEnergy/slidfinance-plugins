@@ -17,6 +17,6 @@ export interface Rule {
     accountId?: number;
     categoryId?: number;
     description?: string;
-    mcc?: number;
+    mccId?: number;
     bankCategory?: string;
 }
