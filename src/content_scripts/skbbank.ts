@@ -32,12 +32,12 @@ function parseTransactions() {
     if (!dateTime || !(dateTime instanceof Date))
       continue;
 
-    let description = pipe(record.querySelector(".column-desc > div"), setBorder, innerText);
+    let description = pipe(record.querySelector(".column-desc > div > div:nth-child(1)"), setBorder, innerText);
 
     let categoryElement = record.querySelector(".operation-title + div");
     let category = categoryElement ? pipe(categoryElement, setBorder, innerText) : "";
 
-    let mccElement = record.querySelector(".column-desc > div:nth-child(2)");
+    let mccElement = record.querySelector(".column-desc > div > div:nth-child(2)");
     let mcc = null;
     if (mccElement) {
       let mccText = pipe(mccElement, setBorder, innerText);

@@ -37,8 +37,9 @@ export function innerText(element) {
 }
 
 export function setBorder(element) {
-  //element.style.border = "1px solid red";
-  element.style["box-shadow"] = "0 3px 45px 0 rgba(0,0,0,0.15);";
+  //element.style.border = "1px solid rgba(0,0,0,0.15)";
+  //element.style.boxShadow = "0 3px 10px 0 rgba(0,0,0,0.15)";
+  element.style.backgroundColor = "rgba(0,0,0,0.05)";
   return element;
 }
 
