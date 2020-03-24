@@ -25,7 +25,7 @@ export let supportedBanks = [
     "name": "otpbank",
     "file": "otpbank.js",
     "url": "https://online.otpbank.ru/",
-    "title": "Банк ОТП"
+    "title": "Банк ОТП Директ"
   },
   {
     "id": 7,

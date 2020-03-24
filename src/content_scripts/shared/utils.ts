@@ -122,19 +122,22 @@ export function parseDate(text) {
   // - (\d{4}|\d{2}) - 4 или 2 числа для года, в обратном порядке не работает
   matches = text.match(/^(\d{1,2})(?:\s|\.|\/)(января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря|янв|фев|мар|апр|май|июн|июл|авг|сен|сент|окт|ноя|дек|\d{1,2})((?:\s|\.|\/)(\d{4}|\d{2}$))?/i);
   if (matches) {
-    let year = new Date().getFullYear();
+    let month;
+    if (matches[2].length == 1 || matches[2].length == 2)
+      month = +matches[2];
+    else
+      month = months[matches[2].toLowerCase()];
+
+    const today = new Date();
+
+    // Когда год не указан, если разобранный месяц больше текущего, тогда это дата за прошлый год, иначе за текущий
+    let year = month > today.getMonth() + 1 ? today.getFullYear() - 1 : today.getFullYear();
     if (matches[4]) {
       if(matches[4].length == 4)
         year = +matches[4];
       else if(matches[4].length == 2)
         year = 2000 + +matches[4];
     }
-
-    let month;
-    if (matches[2].length == 1 || matches[2].length == 2)
-      month = +matches[2];
-    else
-      month = months[matches[2].toLowerCase()];
 
     return new Date(year, month - 1, +matches[1]);
   }
