@@ -38,7 +38,7 @@ function parseTransactions() {
     if (!dateTime || !(dateTime instanceof Date))
       continue;
 
-    let description = pipe(record.querySelector("p[class^='TimelineItem__description']"), setBorder, innerText);
+    let description = pipe(record.querySelector("div[class^='TimelineItem__description']"), setBorder, innerText);
     let categoryElement = record.querySelector("div[class^='UITimelineOperationItem__subDescription']");
     let category = categoryElement ? pipe(categoryElement, setBorder, innerText) : "";
 
