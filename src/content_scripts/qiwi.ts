@@ -39,7 +39,7 @@ function parseTransactions() {
 
     let description = pipe(record.querySelector("span[class^='history-item-header-info-provider']"), setBorder, innerText);
 
-    let amount = pipe(record.querySelector("span[class^='history-item-header-sum-amount']"), setBorder, innerText, parseAmount);
+    let amount = pipe(record.querySelector("span[class^='history-item-header-sum-amount']"), setBorder, innerText, (text) => parseAmount(text, true));
 
     let transaction = {description, dateTime: toISOStringWithoutTimeZone(dateTime), amount};
 
