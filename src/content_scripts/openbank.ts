@@ -17,7 +17,7 @@ function parseBalance() {
 
 function parseTransactions() {
   let transactions = [];
-  let records = document.querySelectorAll(".wocb-transactions > .wocb-transaction, .wocb-transactions-list > .wocb-transaction");
+  let records = document.querySelectorAll(".wocb-transactions .wocb-transaction, .wocb-transactions-scrollarea .wocb-transaction");
 
   for (let record of Array.from(records)) {
     let description = pipe(record.querySelector(".wocb-transaction__description"), setBorder, innerText);
