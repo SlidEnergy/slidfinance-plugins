@@ -20,7 +20,8 @@ function exportCommandHandler(): { balance: number, transactions: any[] } | unde
 }
 
 function parseBalance() {
-  return pipe(document.querySelector("span[data-qa-id='sidebarItemMoney'] span:first-child"), setBorder, innerText, parseAmount);
+  return 0;
+  // return pipe(document.querySelector("span[data-qa-id='sidebarItemMoney'] span:first-child"), setBorder, innerText, parseAmount);
 }
 
 function parseTransactions() {
