@@ -70,7 +70,7 @@ export class ImportComponent implements OnInit {
 
         throwError(response);
       }),
-      switchMap(data => this.importService.import(this.selectedAccount.code, data))
+      switchMap(data => this.importService.import(this.selectedAccount.id, data))
     )
       .subscribe(
         value => {

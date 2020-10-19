@@ -14,13 +14,13 @@ export class ImportService {
   ) {
   }
 
-  import(accountCode: string, data: any[]) {
+  import(accountId: number, data: any[]) {
     let headers = new HttpHeaders();
 
     const token = AuthService.getAccessToken();
     headers = headers.set('Authorization', 'Bearer ' + token);
     headers = headers.set("Content-Type", "application/json");
 
-    return this.http.post(this.url, {...data, code: accountCode}, {headers: headers});
+    return this.http.post(this.url, {...data, accountId}, {headers: headers});
   }
 }
