@@ -83,4 +83,11 @@ export let supportedBanks = [
     "url": "https://bank.megafon.ru/",
     "title": "Мегафон банк"
   },
+  {
+    "id": 0,
+    "name": "rosbank",
+    "file": "rosbank.js",
+    "url": "https://online.rosbank.ru/ibank/home",
+    "title": "Росбанк"
+  },
 ];
