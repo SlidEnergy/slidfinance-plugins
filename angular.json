@@ -137,5 +137,8 @@
       }
     }
   },
-  "defaultProject": "slidfinance"
+  "defaultProject": "slidfinance",
+  "cli": {
+    "analytics": "44f17dc1-8df7-4caf-877c-ab76b86fab8f"
+  }
 }

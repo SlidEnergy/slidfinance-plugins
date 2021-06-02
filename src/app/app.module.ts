@@ -19,6 +19,7 @@ import {MatButtonModule} from "@angular/material/button";
 import { TokenComponent } from './token.component';
 import {MatInputModule} from "@angular/material/input";
 import {BankListComponent} from "./bank-list.component";
+import { StorageModule } from '@ngx-pwa/local-storage';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import {BankListComponent} from "./bank-list.component";
     MatListModule,
     MatButtonModule,
     MatInputModule,
+    StorageModule.forRoot({ IDBNoWrap: true }),
   ],
   providers: [
     ImportService,
