@@ -5,10 +5,10 @@ registerParser(exportCommandHandler);
 
 function exportCommandHandler(): { balance: number, transactions: any[] } | undefined {
   let transactions = parseTransactions();
-  let balance = parseBalance();
+  //let balance = parseBalance();
 
   if (transactions && transactions.length)
-    return {balance, transactions};
+    return {balance: 0, transactions};
 }
 
 function parseBalance() {
